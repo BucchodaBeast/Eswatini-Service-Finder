@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UserCheck, ShieldCheck, Building2, Store, MapPin, Tag } from "lucide-react";
+import { UserCheck, ShieldCheck, Building2, Store, MapPin, Tag, Sparkles } from "lucide-react";
 import { Category } from "../types";
 
 interface RegisterProviderPageProps {
@@ -65,26 +65,28 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm text-center">
-        <span className="bg-blue-100 text-swazi-blue text-xs font-black px-2.5 py-0.5 rounded uppercase">
+      {/* Header and Spectrum Switcher */}
+      <div className="neu-flat p-6 sm:p-8 text-center">
+        <span className="glass-pill text-[11px] font-black uppercase tracking-wider text-swazi-blue px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-2">
+          <Sparkles className="w-3 h-3 text-amber-500" />
           MOD-03: Dual-Spectrum Provider Registry
         </span>
-        <h1 className="text-2xl font-black text-gray-900 mt-2">
-          Join the Eswatini Service & Product Finder
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight mt-1">
+          Join as a Service Provider
         </h1>
-        <p className="text-xs text-gray-500 mt-1 max-w-lg mx-auto">
-          Whether you are an informal micro-vendor in Manzini market or a formal company in Matsapha industrial sites, get direct access to local demand.
+        <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-lg mx-auto">
+          From informal township artisans and street vendors to registered companies in Matsapha—receive direct customer leads across Eswatini.
         </p>
 
-        {/* Dual Spectrum Toggle */}
-        <div className="mt-6 inline-flex p-1 bg-gray-100 rounded-xl">
+        {/* Dual Spectrum Sunken Switch */}
+        <div className="mt-6 neu-pressed p-1.5 inline-flex rounded-2xl">
           <button
             type="button"
             onClick={() => setProviderType("INFORMAL")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-black transition ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
               providerType === "INFORMAL"
-                ? "bg-white text-swazi-blue shadow-sm"
-                : "text-gray-500 hover:text-gray-900"
+                ? "neu-btn text-swazi-blue bg-[#e9eef5]"
+                : "text-slate-500 hover:text-slate-900"
             }`}
           >
             <Store className="w-4 h-4" />
@@ -93,10 +95,10 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
           <button
             type="button"
             onClick={() => setProviderType("FORMAL")}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-black transition ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
               providerType === "FORMAL"
-                ? "bg-white text-swazi-blue shadow-sm"
-                : "text-gray-500 hover:text-gray-900"
+                ? "neu-btn text-swazi-blue bg-[#e9eef5]"
+                : "text-slate-500 hover:text-slate-900"
             }`}
           >
             <Building2 className="w-4 h-4" />
@@ -106,16 +108,20 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
       </div>
 
       {successMessage ? (
-        <div className="bg-green-50 border-2 border-green-500 rounded-2xl p-6 text-center space-y-3">
-          <ShieldCheck className="w-12 h-12 text-green-600 mx-auto" />
-          <h2 className="text-xl font-black text-green-900">{successMessage}</h2>
-          <p className="text-xs text-green-700">Check the Provider Feed to bid on jobs matching your categories and location.</p>
+        <div className="glass-card p-8 text-center space-y-3 border-2 border-emerald-400">
+          <div className="w-14 h-14 rounded-2xl neu-flat flex items-center justify-center text-emerald-600 mx-auto">
+            <ShieldCheck className="w-8 h-8" />
+          </div>
+          <h2 className="text-xl font-black text-slate-800">{successMessage}</h2>
+          <p className="text-xs text-slate-600">
+            Head over to the Provider Bids feed to start submitting offers for customer requests in your area.
+          </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-5 text-sm">
+        <form onSubmit={handleSubmit} className="neu-flat p-6 sm:p-8 space-y-5 text-xs sm:text-sm">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 {providerType === "INFORMAL" ? "Trade / Stall / Service Name *" : "Registered Company Name *"}
               </label>
               <input
@@ -124,12 +130,12 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
                 placeholder={providerType === "INFORMAL" ? "e.g. Sindi's Fresh Braai & Chicken Dust" : "e.g. Eswatini Industrial Hydraulics Ltd"}
                 value={businessName}
                 onChange={e => setBusinessName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 Contact Person Name
               </label>
               <input
@@ -137,14 +143,14 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
                 placeholder="e.g. Sindi Dlamini"
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 Phone Number (WhatsApp / Calls) *
               </label>
               <input
@@ -153,18 +159,18 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
                 placeholder="e.g. 26876123456"
                 value={phoneNumber}
                 onChange={e => setPhoneNumber(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 Primary Operating Town *
               </label>
               <select
                 value={town}
                 onChange={e => setTown(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-swazi-blue focus:outline-none text-xs"
+                className="neu-input w-full px-3 py-2.5 rounded-xl text-slate-800 text-xs"
               >
                 <option value="Manzini">Manzini</option>
                 <option value="Mbabane">Mbabane</option>
@@ -179,46 +185,46 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
 
           {/* Verification Tier Fields */}
           {providerType === "INFORMAL" ? (
-            <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <span className="text-xs font-bold text-gray-700 uppercase block mb-1">
+            <div className="neu-pressed p-4 rounded-xl space-y-1.5">
+              <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
                 Optional Tier 1 Verification (National ID / MoMo link)
               </span>
-              <p className="text-[11px] text-gray-500 mb-2">
-                Providing your Swazi National ID grants you a "Verified Vendor" badge on your bids.
+              <p className="text-[11px] text-slate-500">
+                Entering your Swazi National ID awards you a "Verified Vendor" trust badge on submitted bids.
               </p>
               <input
                 type="text"
                 placeholder="National ID Number (e.g. 950101...)"
                 value={nationalIdNumber}
                 onChange={e => setNationalIdNumber(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-swazi-blue focus:outline-none text-xs"
+                className="neu-input w-full px-3 py-2 rounded-lg text-slate-800 text-xs mt-1"
               />
             </div>
           ) : (
-            <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <span className="text-xs font-bold text-gray-700 uppercase block mb-1">
+            <div className="neu-pressed p-4 rounded-xl space-y-1.5">
+              <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
                 Tier 2 Formal Verification (Tax PIN / Trading License)
               </span>
-              <p className="text-[11px] text-gray-500 mb-2">
-                Enables corporate reverse-auction participation and procurement verification.
+              <p className="text-[11px] text-slate-500">
+                Unlocks institutional contracts and formal procurement tenders.
               </p>
               <input
                 type="text"
                 placeholder="ERS Tax Identification Number (TIN)"
                 value={taxPin}
                 onChange={e => setTaxPin(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-swazi-blue focus:outline-none text-xs"
+                className="neu-input w-full px-3 py-2 rounded-lg text-slate-800 text-xs mt-1"
               />
             </div>
           )}
 
           {/* Service Radius Slider */}
           <div>
-            <div className="flex justify-between items-center mb-1">
-              <label className="text-xs font-bold text-gray-700 uppercase">
-                Service Radius: {serviceRadiusKm} km
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">
+                Service Radius: <span className="text-swazi-blue font-black">{serviceRadiusKm} km</span>
               </label>
-              <span className="text-xs text-gray-400">Around {town}</span>
+              <span className="text-xs text-slate-400">Around {town}</span>
             </div>
             <input
               type="range"
@@ -226,16 +232,16 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
               max="80"
               value={serviceRadiusKm}
               onChange={e => setServiceRadiusKm(Number(e.target.value))}
-              className="w-full accent-swazi-blue"
+              className="w-full accent-swazi-blue cursor-pointer"
             />
           </div>
 
           {/* Category Selection */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase mb-2">
-              Select Your Specialties ({selectedCategoryIds.length} selected)
+            <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
+              Select Your Offerings ({selectedCategoryIds.length} selected)
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-2 border border-gray-200 rounded-xl bg-gray-50">
+            <div className="neu-pressed p-2.5 rounded-2xl grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto">
               {categories.map(c => {
                 const isSelected = selectedCategoryIds.includes(c.id);
                 return (
@@ -243,10 +249,10 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
                     type="button"
                     key={c.id}
                     onClick={() => toggleCategory(c.id)}
-                    className={`p-2 text-left rounded-lg text-xs font-medium border transition ${
+                    className={`p-2 text-left rounded-xl text-xs font-bold transition-all ${
                       isSelected
-                        ? "bg-swazi-blue text-white border-swazi-blue"
-                        : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                        ? "neu-btn-primary shadow-sm"
+                        : "neu-btn text-slate-700 hover:text-slate-900"
                     }`}
                   >
                     {c.name}
@@ -256,13 +262,14 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
             </div>
           </div>
 
+          {/* Submit Action */}
           <div className="pt-2">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 bg-swazi-blue hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition disabled:opacity-50"
+              className="neu-btn-primary w-full py-3.5 px-6 rounded-2xl font-black text-sm tracking-wide disabled:opacity-50"
             >
-              {isSubmitting ? "Registering..." : "Complete Provider Registration"}
+              {isSubmitting ? "Registering Provider..." : "Complete Provider Registration"}
             </button>
           </div>
         </form>

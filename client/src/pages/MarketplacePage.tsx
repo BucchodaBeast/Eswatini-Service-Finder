@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MessageCircle, Phone, Clock, MapPin, Tag, CheckCircle2, ChevronDown, ChevronUp, AlertCircle } from "lucide-react";
+import { MessageCircle, Phone, Clock, MapPin, Tag, CheckCircle2, ChevronDown, ChevronUp, AlertCircle, Sparkles, Filter } from "lucide-react";
 import { CustomerRequest, Category, BidOffer } from "../types";
 
 interface MarketplacePageProps {
@@ -75,55 +75,63 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
 
   return (
     <div className="space-y-6">
-      {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-swazi-blue to-blue-800 rounded-2xl p-6 text-white shadow-lg">
-        <div className="max-w-3xl">
-          <span className="bg-swazi-yellow text-swazi-dark text-xs font-black px-2.5 py-1 rounded uppercase tracking-wider">
-            Reverse Auction Engine
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-black mt-2 leading-tight">
-            Name Your Need. Compare Structured Bids. Choose Local.
+      {/* Neumorphic Hero Banner with Glass Overlay */}
+      <div className="neu-flat p-6 sm:p-8 relative overflow-hidden">
+        <div className="relative z-10 max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-swazi-blue text-xs font-black uppercase tracking-wider mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>Demand-Driven Reverse Auction</span>
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight leading-snug">
+            Describe Your Need. Compare Bids. Pick Your Local Provider.
           </h1>
-          <p className="text-blue-100 text-sm mt-2">
-            Instead of searching through fragmented ads, post what you need and local informal vendors & formal businesses in Mbabane, Manzini, and Ezulwini will bid with their best prices and fulfillment times.
+
+          <p className="text-slate-600 text-xs sm:text-sm mt-2 leading-relaxed">
+            Instead of searching fragmented classifieds, post what you need. Nearby verified informal vendors and registered businesses across Mbabane, Manzini, and Ezulwini submit structured offers directly to you.
           </p>
-          <div className="mt-4 flex flex-wrap gap-3">
+
+          <div className="mt-5 flex flex-wrap gap-3">
             <button
               onClick={onOpenPostModal}
-              className="bg-swazi-yellow hover:bg-yellow-400 text-swazi-dark font-black px-5 py-2.5 rounded-xl text-sm shadow transition active:scale-95"
+              className="neu-btn-primary px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm flex items-center gap-2"
             >
-              + Post a Request Now
+              <span>+ Post a Request Now</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Filter Chips */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Filter Controls (Neumorphic Sunken Bar) */}
+      <div className="neu-flat p-4 sm:p-5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          {/* Town Pills */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-            <span className="text-xs font-bold text-gray-400 uppercase">Town:</span>
-            {["ALL", "Mbabane", "Ezulwini", "Matsapha", "Manzini", "Nhlangano"].map(t => (
-              <button
-                key={t}
-                onClick={() => setSelectedTown(t)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition ${
-                  selectedTown === t
-                    ? "bg-swazi-blue text-white shadow-sm"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {t === "ALL" ? "All Eswatini" : t}
-              </button>
-            ))}
+            <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider">Town:</span>
+            <div className="neu-pressed p-1 rounded-2xl flex items-center gap-1">
+              {["ALL", "Mbabane", "Ezulwini", "Matsapha", "Manzini", "Nhlangano"].map(t => (
+                <button
+                  key={t}
+                  onClick={() => setSelectedTown(t)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                    selectedTown === t
+                      ? "neu-btn text-swazi-blue bg-[#e9eef5] shadow-sm"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  {t === "ALL" ? "All Eswatini" : t}
+                </button>
+              ))}
+            </div>
           </div>
 
+          {/* Sector Selector */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-gray-400 uppercase">Sector:</span>
+            <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider">Sector:</span>
             <select
               value={selectedSector}
               onChange={e => setSelectedSector(e.target.value)}
-              className="text-xs font-semibold px-2.5 py-1 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-swazi-blue"
+              className="neu-input px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700"
             >
               {sectors.map(s => (
                 <option key={s} value={s}>{s}</option>
@@ -133,24 +141,26 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
         </div>
       </div>
 
-      {/* Accepted Contact Banner if unlocked */}
+      {/* Accepted Contact Banner (Frosted Glass with Emerald Glow) */}
       {acceptedContact && (
-        <div className="bg-green-50 border-2 border-green-500 rounded-2xl p-5 shadow-md animate-fade-in">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
+        <div className="glass-card p-5 sm:p-6 border-2 border-emerald-400/80 shadow-xl animate-fade-in">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl neu-flat flex items-center justify-center text-emerald-600 flex-shrink-0">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
               <div>
-                <h3 className="font-black text-green-900 text-base">
+                <h3 className="font-black text-slate-800 text-base">
                   Bid Accepted! Direct Contact Unlocked
                 </h3>
-                <p className="text-xs text-green-800">
-                  Connect with the provider directly via WhatsApp or phone call to confirm pickup or delivery:
+                <p className="text-xs text-slate-600 mt-0.5">
+                  Reach out directly via native WhatsApp or phone call without platform fees:
                 </p>
               </div>
             </div>
             <button
               onClick={() => setAcceptedContact(null)}
-              className="text-gray-400 hover:text-gray-600 text-xs font-bold"
+              className="neu-btn px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-700 text-xs font-bold"
             >
               Dismiss
             </button>
@@ -161,16 +171,16 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
               href={acceptedContact.whatsAppLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white px-4 py-2 rounded-xl text-xs font-bold shadow transition active:scale-95"
+              className="neu-btn-success flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-bold"
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4 text-white" />
               <span>Open WhatsApp Chat Directly (Free)</span>
             </a>
             <a
               href={acceptedContact.phoneCallLink}
-              className="flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-xl text-xs font-bold shadow transition active:scale-95"
+              className="neu-btn flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-extrabold text-slate-800"
             >
-              <Phone className="w-4 h-4" />
+              <Phone className="w-4 h-4 text-swazi-blue" />
               <span>Call Provider ({acceptedContact.providerPhone})</span>
             </a>
           </div>
@@ -179,23 +189,31 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
 
       {/* Requests Feed */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-black text-gray-900">
-            Active Reverse Auction Requests ({filteredRequests.length})
+        <div className="flex items-center justify-between px-1">
+          <h2 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
+            <span>Active Reverse Auctions</span>
+            <span className="glass-pill px-2.5 py-0.5 rounded-full text-xs font-bold text-swazi-blue">
+              {filteredRequests.length}
+            </span>
           </h2>
-          <span className="text-xs text-gray-500">Live updating</span>
+          <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Real-time telemetry
+          </span>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-gray-400 text-sm">Loading requests...</div>
+          <div className="neu-flat p-12 text-center text-slate-400 text-sm">
+            Loading active auctions...
+          </div>
         ) : filteredRequests.length === 0 ? (
-          <div className="bg-white rounded-2xl p-12 text-center border border-gray-200">
-            <AlertCircle className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <h3 className="font-bold text-gray-700">No active requests in this filter</h3>
-            <p className="text-xs text-gray-400 mt-1">Be the first to post a need in this category or town!</p>
+          <div className="neu-flat p-12 text-center">
+            <AlertCircle className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <h3 className="font-extrabold text-slate-700">No active requests in this filter</h3>
+            <p className="text-xs text-slate-400 mt-1">Be the first to post a need in this category or town!</p>
             <button
               onClick={onOpenPostModal}
-              className="mt-4 px-4 py-2 bg-swazi-blue text-white rounded-lg text-xs font-bold"
+              className="mt-4 neu-btn-primary px-5 py-2 rounded-2xl text-xs font-bold"
             >
               Post a Request
             </button>
@@ -206,104 +224,110 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
             return (
               <div
                 key={req.id}
-                className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition"
+                className="neu-flat p-5 sm:p-6 transition-all hover:scale-[1.005]"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                {/* Header Row */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-blue-50 text-swazi-blue">
+                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                      <span className="glass-pill text-[10px] font-black uppercase text-swazi-blue px-2.5 py-0.5 rounded-full">
                         {req.categoryName}
                       </span>
-                      <span className="flex items-center gap-1 text-[11px] font-semibold text-gray-500">
+                      <span className="flex items-center gap-1 text-[11px] font-bold text-slate-500">
                         <MapPin className="w-3 h-3 text-red-500" />
                         {req.town}
                       </span>
                       {req.deliveryNeeded && (
-                        <span className="text-[10px] bg-amber-50 text-amber-700 font-bold px-2 py-0.5 rounded">
+                        <span className="glass-pill text-[10px] text-amber-700 font-bold px-2.5 py-0.5 rounded-full">
                           Delivery Needed
                         </span>
                       )}
                     </div>
-                    <h3 className="text-base font-black text-gray-900">{req.title}</h3>
+                    <h3 className="text-base sm:text-lg font-black text-slate-800 tracking-tight">
+                      {req.title}
+                    </h3>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <span className="text-[10px] text-gray-400 font-bold uppercase block">Budget</span>
-                      <span className="text-lg font-black text-green-700">
+                  {/* Budget & Toggle */}
+                  <div className="flex items-center gap-3 self-end sm:self-center">
+                    <div className="neu-pressed px-3.5 py-1.5 rounded-xl text-right">
+                      <span className="text-[9px] text-slate-400 font-bold uppercase block">Budget</span>
+                      <span className="text-base font-black text-emerald-700">
                         SZL {req.budgetSzl.toLocaleString()}
                       </span>
                     </div>
 
                     <button
                       onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
-                      className="p-2 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 transition"
+                      className="neu-btn p-2.5 rounded-2xl text-slate-600 hover:text-slate-900"
                       aria-label="Toggle bids"
                     >
-                      {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                      {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
 
-                <p className="text-xs text-gray-600 mt-2 line-clamp-2">{req.description}</p>
+                <p className="text-xs text-slate-600 mt-2.5 leading-relaxed line-clamp-2">
+                  {req.description}
+                </p>
 
                 {/* Footer status & bids count */}
-                <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2 text-gray-400 font-medium">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>Window: {req.biddingWindowHours}h ({req.status})</span>
+                <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 text-slate-400 font-medium text-[11px]">
+                    <Clock className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Window: {req.biddingWindowHours}h • Status: <strong className="text-slate-600 uppercase font-bold">{req.status}</strong></span>
                   </div>
 
                   <button
                     onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
-                    className="font-bold text-swazi-blue hover:underline flex items-center gap-1"
+                    className="neu-btn px-3 py-1 rounded-xl text-xs font-black text-swazi-blue flex items-center gap-1.5"
                   >
-                    <span>View Bids / Offers</span>
-                    <span className="bg-swazi-blue text-white rounded-full px-2 py-0.5 text-[10px]">
+                    <span>View Offers</span>
+                    <span className="neu-pressed px-2 py-0.2 rounded-full text-[10px] text-slate-800 font-black">
                       {req.bids?.length || 0}
                     </span>
                   </button>
                 </div>
 
-                {/* Expanded Bids Section */}
+                {/* Expanded Bids Section (Sunken Neumorphic Container) */}
                 {isExpanded && (
-                  <div className="mt-4 pt-4 border-t border-gray-200 space-y-3 bg-gray-50 -mx-5 -mb-5 p-5 rounded-b-2xl">
+                  <div className="mt-4 pt-4 border-t border-slate-200/80 space-y-3">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-xs font-black uppercase tracking-wider text-gray-700">
+                      <h4 className="text-xs font-black uppercase tracking-wider text-slate-700">
                         Submitted Provider Bids
                       </h4>
-                      <span className="text-[11px] text-gray-500">
+                      <span className="text-[11px] text-slate-500">
                         Compare price, ETA & guarantee before selecting
                       </span>
                     </div>
 
                     {!req.bids || req.bids.length === 0 ? (
-                      <div className="p-4 text-center text-xs text-gray-500 bg-white rounded-xl border border-gray-200">
+                      <div className="neu-pressed p-4 text-center text-xs text-slate-500 rounded-xl">
                         No bids submitted yet. Providers in {req.town} have been alerted.
                       </div>
                     ) : (
                       req.bids.map(bid => (
                         <div
                           key={bid.id}
-                          className={`bg-white p-4 rounded-xl border ${
+                          className={`neu-flat-sm p-4 space-y-2 transition-all ${
                             bid.status === "ACCEPTED"
-                              ? "border-green-500 bg-green-50/40"
-                              : "border-gray-200"
-                          } shadow-sm space-y-2`}
+                              ? "border-2 border-emerald-400 bg-emerald-50/20"
+                              : ""
+                          }`}
                         >
                           <div className="flex items-start justify-between">
                             <div>
-                              <span className="text-[10px] font-bold text-gray-400 uppercase">
+                              <span className="glass-pill text-[9px] font-black text-slate-500 uppercase px-2 py-0.5 rounded-full">
                                 {bid.providerTier.replace(/_/g, " ")}
                               </span>
-                              <h5 className="font-black text-sm text-gray-900">{bid.providerBusiness}</h5>
+                              <h5 className="font-black text-sm text-slate-800 mt-1">{bid.providerBusiness}</h5>
                             </div>
                             <div className="text-right">
-                              <span className="text-base font-black text-gray-900">
+                              <span className="text-base font-black text-slate-800">
                                 SZL {(bid.priceSzl + bid.deliveryFeeSzl).toLocaleString()}
                               </span>
                               {bid.deliveryFeeSzl > 0 && (
-                                <span className="text-[10px] text-gray-500 block">
+                                <span className="text-[10px] text-slate-500 block">
                                   (SZL {bid.priceSzl} + SZL {bid.deliveryFeeSzl} delivery)
                                 </span>
                               )}
@@ -311,28 +335,28 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
                           </div>
 
                           {bid.notes && (
-                            <p className="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg italic">
+                            <p className="neu-pressed text-xs text-slate-600 p-2.5 rounded-xl italic">
                               "{bid.notes}"
                             </p>
                           )}
 
                           <div className="flex items-center justify-between text-xs pt-1">
-                            <span className="text-gray-500">
-                              Estimated Time: <strong>{bid.estimatedHours} Hours</strong>
+                            <span className="text-slate-500 text-[11px]">
+                              Estimated Completion: <strong className="text-slate-800">{bid.estimatedHours} Hours</strong>
                             </span>
 
                             {req.status === "AWARDED" ? (
                               bid.status === "ACCEPTED" ? (
-                                <span className="bg-green-100 text-green-800 font-bold px-3 py-1 rounded-full text-xs">
+                                <span className="neu-pressed px-3 py-1 rounded-xl text-emerald-700 font-black text-xs flex items-center gap-1">
                                   ✓ Selected Winning Bid
                                 </span>
                               ) : (
-                                <span className="text-gray-400 text-xs">Closed</span>
+                                <span className="text-slate-400 text-xs">Closed</span>
                               )
                             ) : (
                               <button
                                 onClick={() => handleAcceptBid(req.id, bid.id)}
-                                className="bg-swazi-blue hover:bg-blue-700 text-white font-bold px-3.5 py-1.5 rounded-lg text-xs shadow-sm transition active:scale-95"
+                                className="neu-btn-primary px-3.5 py-1.5 rounded-xl text-xs font-black"
                               >
                                 Accept Offer & Contact
                               </button>

@@ -25,16 +25,16 @@ export function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      {/* Navigation */}
+    <div className="min-h-screen bg-[#e9eef5] text-slate-800 flex flex-col font-sans selection:bg-swazi-blue selection:text-white">
+      {/* Frosted Glass Navigation */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenPostModal={() => setIsPostModalOpen(true)}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+      {/* Main Content View */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {activeTab === "marketplace" && (
           <MarketplacePage
             categories={categories}
@@ -70,14 +70,22 @@ export function App() {
         }}
       />
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-6 text-center text-xs text-gray-500">
-        <div className="max-w-7xl mx-auto px-4 space-y-1">
-          <p className="font-semibold text-gray-700">
-            Eswatini Service & Product Finder • Built for Mbabane, Ezulwini, Matsapha & Manzini
+      {/* Neumorphic & Frosted Footer */}
+      <footer className="mt-12 py-8 border-t border-slate-200/60 glass-nav">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center space-y-2">
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-5 h-5 rounded-lg neu-flat flex items-center justify-center text-[10px] font-black text-swazi-blue">
+              SZ
+            </div>
+            <p className="text-xs font-black text-slate-700 tracking-tight">
+              Eswatini Service & Product Finder
+            </p>
+          </div>
+          <p className="text-[11px] text-slate-500 font-medium">
+            Reverse Auctions • Proximity Node Discovery • Dual-Spectrum Registry • Economic Telemetry
           </p>
-          <p>
-            Reverse Auction Engine • Proximity Discovery • MoMo & ATM Node Locator • Informal Economic Index
+          <p className="text-[10px] text-slate-400">
+            Connecting Mbabane, Ezulwini, Matsapha & Manzini
           </p>
         </div>
       </footer>

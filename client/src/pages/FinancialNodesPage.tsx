@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, AlertTriangle, CheckCircle, RefreshCw, Smartphone, Landmark, Building2, ThumbsUp } from "lucide-react";
+import { MapPin, AlertTriangle, CheckCircle, RefreshCw, Smartphone, Landmark, Building2, Sparkles } from "lucide-react";
 import { FinancialNode } from "../types";
 
 export const FinancialNodesPage: React.FC = () => {
@@ -53,84 +53,86 @@ export const FinancialNodesPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-6 rounded-2xl shadow-lg">
-        <span className="bg-swazi-yellow text-swazi-dark text-xs font-black px-2.5 py-0.5 rounded uppercase">
-          MOD-04: Geospatial & Financial Node Engine
+      {/* Neumorphic Header */}
+      <div className="neu-flat p-6 sm:p-8">
+        <span className="glass-pill text-[11px] font-black uppercase tracking-wider text-swazi-blue px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-2">
+          <Sparkles className="w-3 h-3 text-amber-500" />
+          MOD-04: Geospatial & Financial Node Locator
         </span>
-        <h1 className="text-2xl font-black mt-2">
-          Everyday Financial Access Points in Eswatini
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">
+          Financial Access Points in Eswatini
         </h1>
-        <p className="text-blue-200 text-xs mt-1 max-w-2xl">
-          Locate nearby ATMs (FNB, Standard Bank, Nedbank, SBS) and CashPlus / MTN MoMo cash-out agents across Mbabane, Ezulwini, Matsapha, and Manzini. Real-time community reported status helps avoid dead trips.
+        <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+          Locate nearby bank ATMs (FNB, Standard Bank, Nedbank, SBS) and CashPlus / MTN MoMo cash-out points across Mbabane, Ezulwini, Matsapha, and Manzini. Real-time community reporting prevents unnecessary journeys.
         </p>
-      </div>
 
-      {/* Filters */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-          <span className="text-xs font-bold text-gray-400 uppercase">Town:</span>
-          {["ALL", "Mbabane", "Ezulwini", "Matsapha", "Manzini"].map(t => (
-            <button
-              key={t}
-              onClick={() => setSelectedTown(t)}
-              className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition ${
-                selectedTown === t
-                  ? "bg-swazi-blue text-white shadow-sm"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
+        {/* Filter Bar */}
+        <div className="mt-5 pt-4 border-t border-slate-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+            <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider">Town:</span>
+            <div className="neu-pressed p-1 rounded-2xl flex items-center gap-1">
+              {["ALL", "Mbabane", "Ezulwini", "Matsapha", "Manzini"].map(t => (
+                <button
+                  key={t}
+                  onClick={() => setSelectedTown(t)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                    selectedTown === t
+                      ? "neu-btn text-swazi-blue bg-[#e9eef5]"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  {t === "ALL" ? "All Towns" : t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider">Type:</span>
+            <select
+              value={selectedType}
+              onChange={e => setSelectedType(e.target.value)}
+              className="neu-input px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-700"
             >
-              {t === "ALL" ? "All Towns" : t}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-gray-400 uppercase">Type:</span>
-          <select
-            value={selectedType}
-            onChange={e => setSelectedType(e.target.value)}
-            className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-swazi-blue"
-          >
-            <option value="ALL">All Nodes</option>
-            <option value="ATM">Bank ATMs Only</option>
-            <option value="AGENT_POINT">MoMo / CashPlus Agents</option>
-          </select>
+              <option value="ALL">All Nodes</option>
+              <option value="ATM">Bank ATMs Only</option>
+              <option value="AGENT_POINT">MoMo / CashPlus Agents</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Nodes List */}
+      {/* Nodes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading ? (
-          <div className="col-span-full p-12 text-center text-gray-400 text-sm">
-            Loading financial nodes...
+          <div className="col-span-full neu-flat p-12 text-center text-slate-400 text-sm">
+            Locating nearby financial nodes...
           </div>
         ) : filtered.length === 0 ? (
-          <div className="col-span-full bg-white p-12 rounded-2xl border border-gray-200 text-center">
-            <Landmark className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <h3 className="font-bold text-gray-700">No access points found</h3>
-            <p className="text-xs text-gray-400 mt-1">Try selecting another town or type.</p>
+          <div className="col-span-full neu-flat p-12 text-center">
+            <Landmark className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <h3 className="font-bold text-slate-700">No access points found</h3>
+            <p className="text-xs text-slate-400 mt-1">Try selecting another town or node filter.</p>
           </div>
         ) : (
           filtered.map(node => {
             const isAtm = node.nodeType === "ATM";
             const isMoMo = node.operator === "MTN MoMo";
-            const isFnb = node.operator === "FNB Eswatini";
 
             return (
               <div
                 key={node.id}
-                className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between"
+                className="neu-flat p-5 flex flex-col justify-between transition-all hover:scale-[1.01]"
               >
                 <div>
-                  <div className="flex items-start justify-between">
+                  <div className="flex items-start justify-between gap-2">
                     <span
-                      className={`text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 ${
+                      className={`glass-pill text-[10px] font-black px-2.5 py-1 rounded-full flex items-center gap-1 ${
                         isAtm
-                          ? "bg-purple-100 text-purple-800"
+                          ? "text-purple-800"
                           : isMoMo
-                          ? "bg-yellow-100 text-yellow-900"
-                          : "bg-emerald-100 text-emerald-800"
+                          ? "text-amber-900"
+                          : "text-emerald-800"
                       }`}
                     >
                       {isAtm ? <Building2 className="w-3 h-3" /> : <Smartphone className="w-3 h-3" />}
@@ -139,35 +141,35 @@ export const FinancialNodesPage: React.FC = () => {
 
                     {/* Operational Status Tag */}
                     {node.operationalStatus === "VERIFIED_ACTIVE" ? (
-                      <span className="flex items-center gap-1 text-[10px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full border border-green-200">
-                        <CheckCircle className="w-3 h-3 text-green-600" />
+                      <span className="glass-pill flex items-center gap-1 text-[10px] font-black text-emerald-700 px-2.5 py-1 rounded-full">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
                         Active & Dispensing
                       </span>
                     ) : node.operationalStatus === "OUT_OF_CASH" ? (
-                      <span className="flex items-center gap-1 text-[10px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">
+                      <span className="glass-pill flex items-center gap-1 text-[10px] font-black text-red-700 px-2.5 py-1 rounded-full">
                         <AlertTriangle className="w-3 h-3 text-red-600" />
-                        Reported Out of Cash
+                        Reported Empty
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                      <span className="glass-pill flex items-center gap-1 text-[10px] font-black text-amber-700 px-2.5 py-1 rounded-full">
                         <RefreshCw className="w-3 h-3 text-amber-600" />
                         Issue Reported
                       </span>
                     )}
                   </div>
 
-                  <h3 className="font-black text-base text-gray-900 mt-2">{node.name}</h3>
+                  <h3 className="font-black text-base text-slate-800 mt-3">{node.name}</h3>
 
-                  <div className="mt-2 flex items-start gap-1.5 text-xs text-gray-600">
+                  <div className="mt-2 flex items-start gap-1.5 text-xs text-slate-600">
                     <MapPin className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
-                    <span>{node.landmark}, <strong>{node.town}</strong></span>
+                    <span>{node.landmark}, <strong className="text-slate-800">{node.town}</strong></span>
                   </div>
 
-                  <div className="mt-3 flex flex-wrap gap-1">
+                  <div className="mt-3 flex flex-wrap gap-1.5">
                     {node.services.map((svc, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] font-semibold bg-gray-100 text-gray-600 px-2 py-0.5 rounded"
+                        className="neu-pressed text-[10px] font-bold text-slate-600 px-2 py-0.5 rounded-lg"
                       >
                         {svc}
                       </span>
@@ -175,28 +177,29 @@ export const FinancialNodesPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                  <span className="text-[11px] text-gray-400">
-                    {node.userReportsCount > 0 ? `${node.userReportsCount} user report(s)` : "No issues"}
+                {/* Footer and Report Action */}
+                <div className="mt-5 pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
+                  <span className="text-[11px] text-slate-400 font-medium">
+                    {node.userReportsCount > 0 ? `${node.userReportsCount} user report(s)` : "Verified working"}
                   </span>
 
                   {reportingNodeId === node.id ? (
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleReportIssue(node.id, "OUT_OF_CASH")}
-                        className="text-[10px] bg-red-600 text-white font-bold px-2 py-1 rounded"
+                        className="neu-btn px-2 py-1 rounded-lg text-[10px] font-black text-red-600"
                       >
-                        No Cash
+                        Out of Cash
                       </button>
                       <button
                         onClick={() => handleReportIssue(node.id, "NETWORK_OFFLINE")}
-                        className="text-[10px] bg-amber-600 text-white font-bold px-2 py-1 rounded"
+                        className="neu-btn px-2 py-1 rounded-lg text-[10px] font-black text-amber-600"
                       >
                         Offline
                       </button>
                       <button
                         onClick={() => setReportingNodeId(null)}
-                        className="text-[10px] text-gray-400 px-1"
+                        className="text-[10px] text-slate-400 px-1 font-semibold"
                       >
                         Cancel
                       </button>
@@ -204,9 +207,9 @@ export const FinancialNodesPage: React.FC = () => {
                   ) : (
                     <button
                       onClick={() => setReportingNodeId(node.id)}
-                      className="text-xs text-gray-500 hover:text-red-600 font-semibold flex items-center gap-1"
+                      className="neu-btn px-2.5 py-1 rounded-xl text-[11px] font-bold text-slate-600 hover:text-red-600 flex items-center gap-1"
                     >
-                      <AlertTriangle className="w-3 h-3" />
+                      <AlertTriangle className="w-3 h-3 text-amber-500" />
                       <span>Report Status</span>
                     </button>
                   )}

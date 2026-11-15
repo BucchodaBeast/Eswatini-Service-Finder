@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Clock, DollarSign, MapPin, Tag } from "lucide-react";
+import { X, Clock, DollarSign, MapPin, Tag, Sparkles } from "lucide-react";
 import { Category } from "../types";
 
 interface RequestModalProps {
@@ -73,36 +73,40 @@ export const RequestModal: React.FC<RequestModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md overflow-y-auto animate-fade-in">
+      <div className="glass-card max-w-lg w-full p-6 sm:p-8 relative my-8 border border-white/80 shadow-2xl">
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
+          className="neu-btn w-9 h-9 rounded-full flex items-center justify-center absolute top-5 right-5 text-slate-500 hover:text-slate-800"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         </button>
 
-        <div className="mb-4">
-          <span className="inline-block px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-swazi-blue bg-blue-50 rounded-full">
+        {/* Modal Header */}
+        <div className="mb-6">
+          <span className="glass-pill text-[11px] font-black uppercase tracking-wider text-swazi-blue px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-2">
+            <Sparkles className="w-3 h-3 text-amber-500" />
             Reverse Auction Engine
           </span>
-          <h2 className="text-xl font-black text-gray-900 mt-1">
-            Describe Your Need & Get Bids
+          <h2 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
+            Describe Your Need
           </h2>
-          <p className="text-xs text-gray-500">
-            Nearby verified informal vendors and formal providers in Eswatini will submit competitive offers.
+          <p className="text-xs text-slate-500 mt-1">
+            Nearby providers in Eswatini will submit competitive offers within your timeframe.
           </p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-200">
+          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
+          {/* Title */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+            <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
               What do you need? *
             </label>
             <input
@@ -111,20 +115,21 @@ export const RequestModal: React.FC<RequestModalProps> = ({
               placeholder="e.g. 12V Car Battery replacement / 30-person Spit Braai"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+              className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
             />
           </div>
 
+          {/* Category & Town */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 <Tag className="w-3.5 h-3.5 inline mr-1 text-swazi-blue" />
                 Category
               </label>
               <select
                 value={categoryId}
                 onChange={e => setCategoryId(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-swazi-blue focus:outline-none text-xs"
+                className="neu-input w-full px-3 py-2.5 rounded-xl text-slate-800 text-xs"
               >
                 {categories.map(c => (
                   <option key={c.id} value={c.id}>
@@ -135,14 +140,14 @@ export const RequestModal: React.FC<RequestModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 <MapPin className="w-3.5 h-3.5 inline mr-1 text-red-500" />
-                Town / Area *
+                Town / Hub *
               </label>
               <select
                 value={town}
                 onChange={e => setTown(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-swazi-blue focus:outline-none text-xs"
+                className="neu-input w-full px-3 py-2.5 rounded-xl text-slate-800 text-xs"
               >
                 <option value="Mbabane">Mbabane</option>
                 <option value="Ezulwini">Ezulwini</option>
@@ -155,24 +160,26 @@ export const RequestModal: React.FC<RequestModalProps> = ({
             </div>
           </div>
 
+          {/* Description */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-              Detailed Description *
+            <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+              Specific Requirements *
             </label>
             <textarea
               required
               rows={3}
-              placeholder="Provide exact details: car model, dietary preferences, dimensions, or specific location..."
+              placeholder="Provide exact details: car model, dimensions, delivery address, or date needed..."
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+              className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
             />
           </div>
 
+          {/* Budget & Window */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-                <DollarSign className="w-3.5 h-3.5 inline mr-1 text-green-600" />
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                <DollarSign className="w-3.5 h-3.5 inline mr-1 text-emerald-600" />
                 Target Budget (SZL) *
               </label>
               <input
@@ -182,32 +189,33 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                 placeholder="e.g. 1200"
                 value={budgetSzl}
                 onChange={e => setBudgetSzl(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 font-bold placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-                <Clock className="w-3.5 h-3.5 inline mr-1 text-orange-500" />
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                <Clock className="w-3.5 h-3.5 inline mr-1 text-amber-500" />
                 Bidding Window
               </label>
               <select
                 value={biddingWindowHours}
                 onChange={e => setBiddingWindowHours(Number(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-swazi-blue focus:outline-none text-xs"
+                className="neu-input w-full px-3 py-2.5 rounded-xl text-slate-800 text-xs"
               >
-                <option value={2}>2 Hours (Urgent)</option>
+                <option value={2}>2 Hours (Urgent need)</option>
                 <option value={4}>4 Hours</option>
                 <option value={12}>12 Hours (Standard)</option>
-                <option value={24}>24 Hours (Best price)</option>
+                <option value={24}>24 Hours (Best rates)</option>
               </select>
             </div>
           </div>
 
+          {/* Contact Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-                Your Phone Number *
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                Your Contact Phone *
               </label>
               <input
                 type="tel"
@@ -215,11 +223,12 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                 placeholder="e.g. 26876123456"
                 value={customerPhone}
                 onChange={e => setCustomerPhone(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
               />
             </div>
+
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 Your Name
               </label>
               <input
@@ -227,31 +236,33 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                 placeholder="Optional"
                 value={customerName}
                 onChange={e => setCustomerName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
               />
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 pt-1">
+          {/* Delivery Checkbox */}
+          <div className="neu-flat-sm p-3 flex items-center gap-2.5">
             <input
               type="checkbox"
               id="delivery"
               checked={deliveryNeeded}
               onChange={e => setDeliveryNeeded(e.target.checked)}
-              className="rounded text-swazi-blue focus:ring-swazi-blue"
+              className="w-4 h-4 rounded text-swazi-blue accent-swazi-blue cursor-pointer"
             />
-            <label htmlFor="delivery" className="text-xs text-gray-700 font-medium">
-              Requires delivery or mobile provider to travel to my location
+            <label htmlFor="delivery" className="text-xs text-slate-700 font-semibold cursor-pointer">
+              Requires delivery or mobile provider to travel to my premises
             </label>
           </div>
 
+          {/* Submit Action */}
           <div className="pt-2">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-2.5 px-4 bg-swazi-blue hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition disabled:opacity-50"
+              className="neu-btn-primary w-full py-3 px-6 rounded-2xl font-black text-sm tracking-wide disabled:opacity-50"
             >
-              {isSubmitting ? "Publishing..." : "Publish Request to Local Providers"}
+              {isSubmitting ? "Publishing Request..." : "Publish to Local Providers"}
             </button>
           </div>
         </form>

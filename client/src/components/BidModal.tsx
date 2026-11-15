@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, DollarSign, Clock, Truck, ShieldCheck } from "lucide-react";
+import { X, DollarSign, Clock, Truck, ShieldCheck, Sparkles } from "lucide-react";
 import { CustomerRequest } from "../types";
 
 interface BidModalProps {
@@ -68,40 +68,40 @@ export const BidModal: React.FC<BidModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md overflow-y-auto animate-fade-in">
+      <div className="glass-card max-w-lg w-full p-6 sm:p-8 relative my-8 border border-white/80 shadow-2xl">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
+          className="neu-btn w-9 h-9 rounded-full flex items-center justify-center absolute top-5 right-5 text-slate-500 hover:text-slate-800"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         </button>
 
-        <div className="mb-4">
-          <span className="inline-block px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-green-700 bg-green-50 rounded-full">
-            Submit Structured Offer
+        <div className="mb-6">
+          <span className="glass-pill text-[11px] font-black uppercase tracking-wider text-emerald-700 px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-2">
+            <Sparkles className="w-3 h-3 text-emerald-500" />
+            Structured Provider Bid
           </span>
-          <h2 className="text-xl font-black text-gray-900 mt-1">
+          <h2 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
             Bid on: {request.title}
           </h2>
-          <div className="mt-1 flex items-center gap-2 text-xs text-gray-500">
-            <span>Target Budget: <strong>SZL {request.budgetSzl.toLocaleString()}</strong></span>
-            <span>•</span>
-            <span>Location: <strong>{request.town}</strong></span>
+          <div className="mt-2 neu-pressed p-2.5 rounded-xl flex items-center justify-between text-xs text-slate-600">
+            <span>Target Budget: <strong className="text-emerald-700 font-black">SZL {request.budgetSzl.toLocaleString()}</strong></span>
+            <span>Location: <strong className="text-slate-800 font-black">{request.town}</strong></span>
           </div>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 text-red-700 text-xs rounded-lg border border-red-200">
+          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-                Your Business / Trade Name *
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                Your Trade / Business Name *
               </label>
               <input
                 type="text"
@@ -109,13 +109,13 @@ export const BidModal: React.FC<BidModalProps> = ({
                 placeholder="e.g. Sipho Auto Services"
                 value={providerBusiness}
                 onChange={e => setProviderBusiness(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-                Your Contact Phone *
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                Contact Phone *
               </label>
               <input
                 type="tel"
@@ -123,19 +123,19 @@ export const BidModal: React.FC<BidModalProps> = ({
                 placeholder="e.g. 26876123456"
                 value={providerPhone}
                 onChange={e => setProviderPhone(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+            <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
               Provider Spectrum / Verification Tier
             </label>
             <select
               value={providerTier}
               onChange={e => setProviderTier(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-swazi-blue focus:outline-none text-xs"
+              className="neu-input w-full px-3 py-2.5 rounded-xl text-slate-800 text-xs"
             >
               <option value="INFORMAL_UNVERIFIED">Informal Micro-Vendor (Self-declared)</option>
               <option value="TIER1_ID_VERIFIED">Tier 1: National ID / MoMo Verified</option>
@@ -145,9 +145,9 @@ export const BidModal: React.FC<BidModalProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-                <DollarSign className="w-3.5 h-3.5 inline mr-1 text-green-600" />
-                Your Price (SZL) *
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                <DollarSign className="w-3.5 h-3.5 inline mr-1 text-emerald-600" />
+                Price (SZL) *
               </label>
               <input
                 type="number"
@@ -156,14 +156,14 @@ export const BidModal: React.FC<BidModalProps> = ({
                 placeholder="1100"
                 value={priceSzl}
                 onChange={e => setPriceSzl(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 font-bold placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 <Truck className="w-3.5 h-3.5 inline mr-1 text-blue-500" />
-                Delivery Fee (SZL)
+                Delivery (SZL)
               </label>
               <input
                 type="number"
@@ -171,13 +171,13 @@ export const BidModal: React.FC<BidModalProps> = ({
                 placeholder="0"
                 value={deliveryFeeSzl}
                 onChange={e => setDeliveryFeeSzl(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 font-bold placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-                <Clock className="w-3.5 h-3.5 inline mr-1 text-orange-500" />
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                <Clock className="w-3.5 h-3.5 inline mr-1 text-amber-500" />
                 ETA (Hours)
               </label>
               <input
@@ -186,21 +186,21 @@ export const BidModal: React.FC<BidModalProps> = ({
                 placeholder="2"
                 value={estimatedHours}
                 onChange={e => setEstimatedHours(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 font-bold placeholder-slate-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase mb-1">
-              Proposal Notes & Guarantee
+            <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+              Proposal Notes & Warranty
             </label>
             <textarea
               rows={2}
               placeholder="e.g. Includes 6-month warranty, can start immediately at your premises..."
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-swazi-blue focus:outline-none"
+              className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
             />
           </div>
 
@@ -208,7 +208,7 @@ export const BidModal: React.FC<BidModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-2.5 px-4 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md transition disabled:opacity-50"
+              className="neu-btn-success w-full py-3 px-6 rounded-2xl font-black text-sm tracking-wide disabled:opacity-50"
             >
               {isSubmitting ? "Submitting Offer..." : "Submit Structured Bid"}
             </button>
