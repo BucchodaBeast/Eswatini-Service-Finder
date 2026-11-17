@@ -1,20 +1,28 @@
 import React, { useState } from "react";
-import { UserCheck, ShieldCheck, Building2, Store, MapPin, Tag, Sparkles } from "lucide-react";
+import { UserCheck, ShieldCheck, Building2, Store, MapPin, Tag, Sparkles, DollarSign, FileText } from "lucide-react";
 import { Category } from "../types";
 
 interface RegisterProviderPageProps {
   categories: Category[];
+  onOpenInquiryKit: () => void;
 }
 
-export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ categories }) => {
+export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({
+  categories,
+  onOpenInquiryKit
+}) => {
   const [providerType, setProviderType] = useState<"INFORMAL" | "FORMAL">("INFORMAL");
   const [businessName, setBusinessName] = useState("");
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [town, setTown] = useState("Manzini");
+  const [neighborhood, setNeighborhood] = useState("Mbabane CBD");
+  const [exactLocation, setExactLocation] = useState("");
   const [nationalIdNumber, setNationalIdNumber] = useState("");
   const [taxPin, setTaxPin] = useState("");
-  const [serviceRadiusKm, setServiceRadiusKm] = useState(25);
+  const [serviceRadiusKm, setServiceRadiusKm] = useState(10);
+  const [servicesOfferedText, setServicesOfferedText] = useState("");
+  const [startingPriceSzl, setStartingPriceSzl] = useState("");
+  const [bio, setBio] = useState("");
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -29,10 +37,14 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!businessName || !phoneNumber || !town) {
-      alert("Please fill required fields.");
+    if (!businessName || !phoneNumber || !exactLocation) {
+      alert("Please fill in business name, phone number, and exact location.");
       return;
     }
+
+    const servicesList = servicesOfferedText
+      ? servicesOfferedText.split(",").map(s => s.trim()).filter(Boolean)
+      : [businessName];
 
     setIsSubmitting(true);
     try {
@@ -46,15 +58,19 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
           tier: providerType === "FORMAL" ? "TIER2_BUSINESS_VERIFIED" : (nationalIdNumber ? "TIER1_ID_VERIFIED" : "INFORMAL_UNVERIFIED"),
           nationalIdNumber: providerType === "INFORMAL" ? nationalIdNumber : undefined,
           taxPin: providerType === "FORMAL" ? taxPin : undefined,
-          town,
+          neighborhood,
+          exactLocation,
           serviceRadiusKm,
-          categoryIds: selectedCategoryIds
+          categoryIds: selectedCategoryIds.length > 0 ? selectedCategoryIds : ["general"],
+          servicesOffered: servicesList,
+          startingPriceSzl: startingPriceSzl ? parseFloat(startingPriceSzl) : undefined,
+          bio
         })
       });
 
       const data = await res.json();
       if (data.success) {
-        setSuccessMessage("Registration successful! You are now listed in the Eswatini Provider Registry and will receive matching customer reverse auctions.");
+        setSuccessMessage("Your service profile is live in Mbabane! Customers searching for nearest services can now discover and contact you directly.");
       }
     } catch (err) {
       alert("Error registering provider.");
@@ -69,13 +85,13 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
       <div className="neu-flat p-6 sm:p-8 text-center">
         <span className="glass-pill text-[11px] font-black uppercase tracking-wider text-swazi-blue px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-2">
           <Sparkles className="w-3 h-3 text-amber-500" />
-          MOD-03: Dual-Spectrum Provider Registry
+          Mbabane Provider Hub
         </span>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight mt-1">
-          Join as a Service Provider
+          List Your Service in Mbabane
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-lg mx-auto">
-          From informal township artisans and street vendors to registered companies in Matsapha—receive direct customer leads across Eswatini.
+          Whether you are a self-hired hairstylist, nail tech, chicken dust stall in the market, or mobile mechanic—get discovered by nearby clients in Mbabane.
         </p>
 
         {/* Dual Spectrum Sunken Switch */}
@@ -90,7 +106,7 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
             }`}
           >
             <Store className="w-4 h-4" />
-            <span>Informal Micro-Vendor</span>
+            <span>Self-Hired / Micro-Vendor</span>
           </button>
           <button
             type="button"
@@ -102,7 +118,18 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
             }`}
           >
             <Building2 className="w-4 h-4" />
-            <span>Formal Business / Institution</span>
+            <span>Registered Business / Facility</span>
+          </button>
+        </div>
+
+        <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-center">
+          <button
+            type="button"
+            onClick={onOpenInquiryKit}
+            className="text-xs font-bold text-swazi-blue hover:underline flex items-center gap-1"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Need a paper enquiry slip to sign up vendors on the street? Click here.</span>
           </button>
         </div>
       </div>
@@ -114,7 +141,7 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
           </div>
           <h2 className="text-xl font-black text-slate-800">{successMessage}</h2>
           <p className="text-xs text-slate-600">
-            Head over to the Provider Bids feed to start submitting offers for customer requests in your area.
+            You are now discoverable when clients search for the nearest services in your Mbabane neighborhood.
           </p>
         </div>
       ) : (
@@ -122,12 +149,12 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-                {providerType === "INFORMAL" ? "Trade / Stall / Service Name *" : "Registered Company Name *"}
+                {providerType === "INFORMAL" ? "Trade / Service / Stall Name *" : "Registered Business Name *"}
               </label>
               <input
                 type="text"
                 required
-                placeholder={providerType === "INFORMAL" ? "e.g. Sindi's Fresh Braai & Chicken Dust" : "e.g. Eswatini Industrial Hydraulics Ltd"}
+                placeholder={providerType === "INFORMAL" ? "e.g. Sindi Knotless Braids / Lindiwe Nails" : "e.g. Mbabane Industrial Hydraulics"}
                 value={businessName}
                 onChange={e => setBusinessName(e.target.value)}
                 className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
@@ -136,7 +163,7 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
 
             <div>
               <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-                Contact Person Name
+                Proprietor / Contact Name
               </label>
               <input
                 type="text"
@@ -151,7 +178,7 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-                Phone Number (WhatsApp / Calls) *
+                Phone Number (WhatsApp & Direct Calls) *
               </label>
               <input
                 type="tel"
@@ -165,36 +192,114 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
 
             <div>
               <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-                Primary Operating Town *
+                Mbabane Neighborhood Hub *
               </label>
               <select
-                value={town}
-                onChange={e => setTown(e.target.value)}
+                value={neighborhood}
+                onChange={e => setNeighborhood(e.target.value)}
                 className="neu-input w-full px-3 py-2.5 rounded-xl text-slate-800 text-xs"
               >
-                <option value="Manzini">Manzini</option>
-                <option value="Mbabane">Mbabane</option>
-                <option value="Ezulwini">Ezulwini</option>
-                <option value="Matsapha">Matsapha</option>
-                <option value="Nhlangano">Nhlangano</option>
-                <option value="Siteki">Siteki</option>
-                <option value="Piggs Peak">Piggs Peak</option>
+                <option value="Mbabane CBD">Mbabane CBD / Central</option>
+                <option value="Swazi Plaza & The Mall">Swazi Plaza & The Mall</option>
+                <option value="Bus Rank & Market">Bus Rank & Market</option>
+                <option value="Sheffield Road">Sheffield Road Industrial</option>
+                <option value="Msunduza">Msunduza</option>
+                <option value="Fonteyn">Fonteyn</option>
+                <option value="Sidwashini">Sidwashini</option>
+                <option value="Eveni">Eveni</option>
+                <option value="Mahwalala">Mahwalala</option>
+                <option value="Checkers">Checkers / Mountain View</option>
+                <option value="Woodlands">Woodlands</option>
+                <option value="Nkoyoyo">Nkoyoyo / Motshane</option>
               </select>
             </div>
           </div>
 
-          {/* Verification Tier Fields */}
+          {/* Exact Location or Mobile */}
+          <div>
+            <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+              Exact Stall / Shop / Mobile Address in Mbabane *
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Container 8 (Pink Door), Bus Rank Walkway OR Mobile - Travel to client's house in Eveni"
+              value={exactLocation}
+              onChange={e => setExactLocation(e.target.value)}
+              className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
+            />
+          </div>
+
+          {/* Detailed Services Menu */}
+          <div>
+            <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+              Granular Offerings (Comma-separated) *
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Knotless Braids, Passion Twists, Straight Back Cornrows, Wig Wash, House Calls"
+              value={servicesOfferedText}
+              onChange={e => setServicesOfferedText(e.target.value)}
+              className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                <DollarSign className="w-3.5 h-3.5 inline mr-1 text-emerald-600" />
+                Starting / Average Price (SZL)
+              </label>
+              <input
+                type="number"
+                placeholder="e.g. 150"
+                value={startingPriceSzl}
+                onChange={e => setStartingPriceSzl(e.target.value)}
+                className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                Operating Radius (km around Mbabane): {serviceRadiusKm} km
+              </label>
+              <input
+                type="range"
+                min="2"
+                max="30"
+                value={serviceRadiusKm}
+                onChange={e => setServiceRadiusKm(Number(e.target.value))}
+                className="w-full accent-swazi-blue cursor-pointer mt-2"
+              />
+            </div>
+          </div>
+
+          {/* Short Bio */}
+          <div>
+            <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+              Short Description / Experience
+            </label>
+            <textarea
+              rows={2}
+              placeholder="Tell clients about your quality, working hours, and whether you do house visits..."
+              value={bio}
+              onChange={e => setBio(e.target.value)}
+              className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
+            />
+          </div>
+
+          {/* Verification Badges */}
           {providerType === "INFORMAL" ? (
             <div className="neu-pressed p-4 rounded-xl space-y-1.5">
               <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
-                Optional Tier 1 Verification (National ID / MoMo link)
+                Optional Tier 1 Trust Badge (National ID / MoMo)
               </span>
               <p className="text-[11px] text-slate-500">
-                Entering your Swazi National ID awards you a "Verified Vendor" trust badge on submitted bids.
+                Entering your Swazi National ID awards you an "ID-Verified" badge to boost client trust.
               </p>
               <input
                 type="text"
-                placeholder="National ID Number (e.g. 950101...)"
+                placeholder="Swazi National ID (e.g. 940815...)"
                 value={nationalIdNumber}
                 onChange={e => setNationalIdNumber(e.target.value)}
                 className="neu-input w-full px-3 py-2 rounded-lg text-slate-800 text-xs mt-1"
@@ -203,11 +308,8 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
           ) : (
             <div className="neu-pressed p-4 rounded-xl space-y-1.5">
               <span className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
-                Tier 2 Formal Verification (Tax PIN / Trading License)
+                Tier 2 Formal Verification (Tax PIN / License)
               </span>
-              <p className="text-[11px] text-slate-500">
-                Unlocks institutional contracts and formal procurement tenders.
-              </p>
               <input
                 type="text"
                 placeholder="ERS Tax Identification Number (TIN)"
@@ -218,30 +320,12 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
             </div>
           )}
 
-          {/* Service Radius Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-1.5">
-              <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">
-                Service Radius: <span className="text-swazi-blue font-black">{serviceRadiusKm} km</span>
-              </label>
-              <span className="text-xs text-slate-400">Around {town}</span>
-            </div>
-            <input
-              type="range"
-              min="5"
-              max="80"
-              value={serviceRadiusKm}
-              onChange={e => setServiceRadiusKm(Number(e.target.value))}
-              className="w-full accent-swazi-blue cursor-pointer"
-            />
-          </div>
-
-          {/* Category Selection */}
+          {/* Categories */}
           <div>
             <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
-              Select Your Offerings ({selectedCategoryIds.length} selected)
+              Select Matching Categories
             </label>
-            <div className="neu-pressed p-2.5 rounded-2xl grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto">
+            <div className="neu-pressed p-2.5 rounded-2xl grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-40 overflow-y-auto">
               {categories.map(c => {
                 const isSelected = selectedCategoryIds.includes(c.id);
                 return (
@@ -262,14 +346,13 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({ cate
             </div>
           </div>
 
-          {/* Submit Action */}
           <div className="pt-2">
             <button
               type="submit"
               disabled={isSubmitting}
               className="neu-btn-primary w-full py-3.5 px-6 rounded-2xl font-black text-sm tracking-wide disabled:opacity-50"
             >
-              {isSubmitting ? "Registering Provider..." : "Complete Provider Registration"}
+              {isSubmitting ? "Publishing Profile..." : "List My Service in Mbabane"}
             </button>
           </div>
         </form>

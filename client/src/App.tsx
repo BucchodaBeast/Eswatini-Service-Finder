@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Navbar } from "./components/Navbar";
 import { RequestModal } from "./components/RequestModal";
+import { OnboardingInquiryModal } from "./components/OnboardingInquiryModal";
+import { ProximitySearchPage } from "./pages/ProximitySearchPage";
 import { MarketplacePage } from "./pages/MarketplacePage";
-import { ProviderFeedPage } from "./pages/ProviderFeedPage";
 import { FinancialNodesPage } from "./pages/FinancialNodesPage";
 import { RegisterProviderPage } from "./pages/RegisterProviderPage";
 import { EieAnalyticsPage } from "./pages/EieAnalyticsPage";
 import { Category } from "./types";
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<"marketplace" | "provider-feed" | "nodes" | "register" | "eie">("marketplace");
+  const [activeTab, setActiveTab] = useState<"search" | "auction" | "nodes" | "register" | "eie">("search");
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [isInquiryKitOpen, setIsInquiryKitOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -31,29 +33,38 @@ export function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenPostModal={() => setIsPostModalOpen(true)}
+        onOpenInquiryKit={() => setIsInquiryKitOpen(true)}
       />
 
       {/* Main Content View */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {activeTab === "marketplace" && (
+        {/* Mode 1: Natural Prompting & Proximity Search */}
+        {activeTab === "search" && (
+          <ProximitySearchPage onOpenInquiryKit={() => setIsInquiryKitOpen(true)} />
+        )}
+
+        {/* Mode 2: Reverse Auction (Post Need with Budget & Receive Bids) */}
+        {activeTab === "auction" && (
           <MarketplacePage
             categories={categories}
             onOpenPostModal={() => setIsPostModalOpen(true)}
           />
         )}
 
-        {activeTab === "provider-feed" && (
-          <ProviderFeedPage categories={categories} />
-        )}
-
+        {/* Financial Utility: ATMs & MoMo Locator */}
         {activeTab === "nodes" && (
           <FinancialNodesPage />
         )}
 
+        {/* Provider Onboarding (Informal Micro-vendors & Formal Businesses) */}
         {activeTab === "register" && (
-          <RegisterProviderPage categories={categories} />
+          <RegisterProviderPage
+            categories={categories}
+            onOpenInquiryKit={() => setIsInquiryKitOpen(true)}
+          />
         )}
 
+        {/* Mbabane Economic Index */}
         {activeTab === "eie" && (
           <EieAnalyticsPage />
         )}
@@ -65,9 +76,15 @@ export function App() {
         onClose={() => setIsPostModalOpen(false)}
         categories={categories}
         onSubmitSuccess={() => {
-          setActiveTab("marketplace");
-          alert("Your request is live! Providers in your area will receive alerts and submit structured bids.");
+          setActiveTab("auction");
+          alert("Your request is live! Providers in your Mbabane neighborhood have been notified to submit structured bids.");
         }}
+      />
+
+      {/* Field Onboarding & Handout Inquiry Kit Modal */}
+      <OnboardingInquiryModal
+        isOpen={isInquiryKitOpen}
+        onClose={() => setIsInquiryKitOpen(false)}
       />
 
       {/* Neumorphic & Frosted Footer */}
@@ -78,15 +95,21 @@ export function App() {
               SZ
             </div>
             <p className="text-xs font-black text-slate-700 tracking-tight">
-              Eswatini Service & Product Finder
+              Mbabane Service & Product Finder • Hyper-Local Proximity & Reverse Auctions
             </p>
           </div>
           <p className="text-[11px] text-slate-500 font-medium">
-            Reverse Auctions • Proximity Node Discovery • Dual-Spectrum Registry • Economic Telemetry
+            Mbabane CBD • Swazi Plaza • Bus Rank • Sheffield Rd • Msunduza • Fonteyn • Eveni • Sidwashini
           </p>
-          <p className="text-[10px] text-slate-400">
-            Connecting Mbabane, Ezulwini, Matsapha & Manzini
-          </p>
+          <div className="pt-2 flex justify-center gap-4 text-xs font-bold text-swazi-blue">
+            <button onClick={() => setIsInquiryKitOpen(true)} className="hover:underline">
+              Vendor Recruitment Handout Kit
+            </button>
+            <span>•</span>
+            <button onClick={() => setActiveTab("register")} className="hover:underline">
+              List a Self-Hired Service
+            </button>
+          </div>
         </div>
       </footer>
     </div>

@@ -5,7 +5,45 @@ export interface Category {
   spectrum: "INFORMAL" | "FORMAL" | "DUAL";
   defaultRadiusKm: number;
   description: string;
+  keywords: string[];
   popularLocations: string[];
+}
+
+export interface ProviderReview {
+  id: string;
+  providerId: string;
+  userName: string;
+  rating: number; // 1 to 5
+  comment: string;
+  date: string;
+  serviceRendered?: string;
+  verifiedClient: boolean;
+}
+
+export interface Provider {
+  id: string;
+  fullName: string;
+  businessName: string;
+  phoneNumber: string;
+  tier: "INFORMAL_UNVERIFIED" | "TIER1_ID_VERIFIED" | "TIER2_BUSINESS_VERIFIED";
+  nationalIdNumber?: string;
+  taxPin?: string;
+  town: string;
+  neighborhood: string;
+  exactLocation: string;
+  latitude: number;
+  longitude: number;
+  serviceRadiusKm: number;
+  categoryIds: string[];
+  servicesOffered: string[];
+  startingPriceSzl?: number;
+  completedJobsCount: number;
+  rating: number;
+  reviewsCount: number;
+  reviews?: ProviderReview[];
+  isAvailable: boolean;
+  bio: string;
+  createdAt: string;
 }
 
 export interface FinancialNode {
@@ -50,6 +88,7 @@ export interface CustomerRequest {
   description: string;
   budgetSzl: number;
   town: string;
+  neighborhood: string;
   latitude: number;
   longitude: number;
   deliveryNeeded: boolean;
@@ -67,6 +106,7 @@ export interface EieMetrics {
   totalMarketplaceEvents: number;
   activeRequestsCount: number;
   registeredProvidersCount: number;
+  totalVerifiedReviews: number;
   benchmarks: Array<{
     category: string;
     town: string;

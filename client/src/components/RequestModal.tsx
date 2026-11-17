@@ -19,7 +19,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
   const [description, setDescription] = useState("");
   const [budgetSzl, setBudgetSzl] = useState("");
   const [categoryId, setCategoryId] = useState(categories[0]?.id || "");
-  const [town, setTown] = useState("Manzini");
+  const [neighborhood, setNeighborhood] = useState("Mbabane CBD");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [deliveryNeeded, setDeliveryNeeded] = useState(false);
@@ -50,7 +50,8 @@ export const RequestModal: React.FC<RequestModalProps> = ({
           budgetSzl: parseFloat(budgetSzl),
           categoryId,
           categoryName: selectedCat?.name || "General Service",
-          town,
+          town: "Mbabane",
+          neighborhood,
           customerPhone,
           customerName: customerName || "Customer",
           deliveryNeeded,
@@ -87,13 +88,13 @@ export const RequestModal: React.FC<RequestModalProps> = ({
         <div className="mb-6">
           <span className="glass-pill text-[11px] font-black uppercase tracking-wider text-swazi-blue px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-2">
             <Sparkles className="w-3 h-3 text-amber-500" />
-            Reverse Auction Engine
+            Mbabane Reverse Auction
           </span>
           <h2 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
-            Describe Your Need
+            Post a Need & Receive Bids
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Nearby providers in Eswatini will submit competitive offers within your timeframe.
+            Nearby self-hired artisans and businesses in Mbabane will submit competitive offers to you.
           </p>
         </div>
 
@@ -107,19 +108,19 @@ export const RequestModal: React.FC<RequestModalProps> = ({
           {/* Title */}
           <div>
             <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-              What do you need? *
+              What service or product do you need? *
             </label>
             <input
               type="text"
               required
-              placeholder="e.g. 12V Car Battery replacement / 30-person Spit Braai"
+              placeholder="e.g. Knotless braids at home / 50 colour copies / Car battery jumpstart"
               value={title}
               onChange={e => setTitle(e.target.value)}
               className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
             />
           </div>
 
-          {/* Category & Town */}
+          {/* Category & Neighborhood */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
@@ -133,7 +134,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
               >
                 {categories.map(c => (
                   <option key={c.id} value={c.id}>
-                    [{c.sector}] {c.name}
+                    {c.name}
                   </option>
                 ))}
               </select>
@@ -142,20 +143,25 @@ export const RequestModal: React.FC<RequestModalProps> = ({
             <div>
               <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 <MapPin className="w-3.5 h-3.5 inline mr-1 text-red-500" />
-                Town / Hub *
+                Mbabane Neighborhood *
               </label>
               <select
-                value={town}
-                onChange={e => setTown(e.target.value)}
+                value={neighborhood}
+                onChange={e => setNeighborhood(e.target.value)}
                 className="neu-input w-full px-3 py-2.5 rounded-xl text-slate-800 text-xs"
               >
-                <option value="Mbabane">Mbabane</option>
-                <option value="Ezulwini">Ezulwini</option>
-                <option value="Matsapha">Matsapha</option>
-                <option value="Manzini">Manzini</option>
-                <option value="Nhlangano">Nhlangano</option>
-                <option value="Siteki">Siteki</option>
-                <option value="Piggs Peak">Piggs Peak</option>
+                <option value="Mbabane CBD">Mbabane CBD / Central</option>
+                <option value="Swazi Plaza & The Mall">Swazi Plaza & The Mall</option>
+                <option value="Bus Rank & Market">Bus Rank & Market</option>
+                <option value="Sheffield Road">Sheffield Road Industrial</option>
+                <option value="Msunduza">Msunduza</option>
+                <option value="Fonteyn">Fonteyn</option>
+                <option value="Sidwashini">Sidwashini</option>
+                <option value="Eveni">Eveni</option>
+                <option value="Mahwalala">Mahwalala</option>
+                <option value="Checkers">Checkers / Mountain View</option>
+                <option value="Woodlands">Woodlands</option>
+                <option value="Nkoyoyo">Nkoyoyo / Motshane</option>
               </select>
             </div>
           </div>
@@ -168,7 +174,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
             <textarea
               required
               rows={3}
-              placeholder="Provide exact details: car model, dimensions, delivery address, or date needed..."
+              placeholder="State exact details: hair length/colour, booklet pages, house location, or time needed..."
               value={description}
               onChange={e => setDescription(e.target.value)}
               className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 placeholder-slate-400"
@@ -186,7 +192,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                 type="number"
                 required
                 min="10"
-                placeholder="e.g. 1200"
+                placeholder="e.g. 350"
                 value={budgetSzl}
                 onChange={e => setBudgetSzl(e.target.value)}
                 className="neu-input w-full px-4 py-2.5 rounded-xl text-slate-800 font-bold placeholder-slate-400"
@@ -203,7 +209,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
                 onChange={e => setBiddingWindowHours(Number(e.target.value))}
                 className="neu-input w-full px-3 py-2.5 rounded-xl text-slate-800 text-xs"
               >
-                <option value={2}>2 Hours (Urgent need)</option>
+                <option value={2}>2 Hours (Urgent)</option>
                 <option value={4}>4 Hours</option>
                 <option value={12}>12 Hours (Standard)</option>
                 <option value={24}>24 Hours (Best rates)</option>
@@ -251,7 +257,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
               className="w-4 h-4 rounded text-swazi-blue accent-swazi-blue cursor-pointer"
             />
             <label htmlFor="delivery" className="text-xs text-slate-700 font-semibold cursor-pointer">
-              Requires delivery or mobile provider to travel to my premises
+              Requires provider to travel to my premises in Mbabane
             </label>
           </div>
 
@@ -262,7 +268,7 @@ export const RequestModal: React.FC<RequestModalProps> = ({
               disabled={isSubmitting}
               className="neu-btn-primary w-full py-3 px-6 rounded-2xl font-black text-sm tracking-wide disabled:opacity-50"
             >
-              {isSubmitting ? "Publishing Request..." : "Publish to Local Providers"}
+              {isSubmitting ? "Publishing Request..." : "Publish to Mbabane Providers"}
             </button>
           </div>
         </form>

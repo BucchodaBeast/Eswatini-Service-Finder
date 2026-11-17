@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { MessageCircle, Phone, Clock, MapPin, Tag, CheckCircle2, ChevronDown, ChevronUp, AlertCircle, Sparkles, Filter } from "lucide-react";
+import { MessageCircle, Phone, Clock, MapPin, Tag, CheckCircle2, ChevronDown, ChevronUp, AlertCircle, Sparkles, PlusCircle, DollarSign } from "lucide-react";
 import { CustomerRequest, Category, BidOffer } from "../types";
+import { BidModal } from "../components/BidModal";
 
 interface MarketplacePageProps {
   categories: Category[];
@@ -9,9 +10,10 @@ interface MarketplacePageProps {
 
 export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, onOpenPostModal }) => {
   const [requests, setRequests] = useState<CustomerRequest[]>([]);
-  const [selectedTown, setSelectedTown] = useState<string>("ALL");
+  const [selectedNeighborhood, setSelectedNeighborhood] = useState<string>("ALL");
   const [selectedSector, setSelectedSector] = useState<string>("ALL");
   const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
+  const [activeRequestForBid, setActiveRequestForBid] = useState<CustomerRequest | null>(null);
   const [loading, setLoading] = useState(true);
   const [acceptedContact, setAcceptedContact] = useState<{
     requestId: string;
@@ -62,10 +64,23 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
     }
   };
 
+  const neighborhoods = [
+    "ALL",
+    "Mbabane CBD",
+    "Swazi Plaza & The Mall",
+    "Bus Rank & Market",
+    "Sheffield Road",
+    "Msunduza",
+    "Fonteyn",
+    "Sidwashini",
+    "Eveni",
+    "Checkers"
+  ];
+
   const sectors = ["ALL", ...Array.from(new Set(categories.map(c => c.sector)))];
 
   const filteredRequests = requests.filter(r => {
-    if (selectedTown !== "ALL" && r.town !== selectedTown) return false;
+    if (selectedNeighborhood !== "ALL" && !r.neighborhood.toLowerCase().includes(selectedNeighborhood.toLowerCase())) return false;
     if (selectedSector !== "ALL") {
       const cat = categories.find(c => c.id === r.categoryId);
       if (cat && cat.sector !== selectedSector) return false;
@@ -75,20 +90,20 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
 
   return (
     <div className="space-y-6">
-      {/* Neumorphic Hero Banner with Glass Overlay */}
+      {/* Neumorphic Hero Banner */}
       <div className="neu-flat p-6 sm:p-8 relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-swazi-blue text-xs font-black uppercase tracking-wider mb-3">
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>Demand-Driven Reverse Auction</span>
+            <span>Mode 2: Demand-Driven Reverse Auction</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight leading-snug">
-            Describe Your Need. Compare Bids. Pick Your Local Provider.
+            Post What You Need in Mbabane & Compare Provider Bids
           </h1>
 
           <p className="text-slate-600 text-xs sm:text-sm mt-2 leading-relaxed">
-            Instead of searching fragmented classifieds, post what you need. Nearby verified informal vendors and registered businesses across Mbabane, Manzini, and Ezulwini submit structured offers directly to you.
+            Specify your location in Mbabane, describe your requirement, and set your target budget in SZL. Local providers bid with their lowest price and fastest turnaround.
           </p>
 
           <div className="mt-5 flex flex-wrap gap-3">
@@ -96,36 +111,35 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
               onClick={onOpenPostModal}
               className="neu-btn-primary px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm flex items-center gap-2"
             >
-              <span>+ Post a Request Now</span>
+              <PlusCircle className="w-4 h-4 text-amber-300" />
+              <span>Post a New Request (with Budget)</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Filter Controls (Neumorphic Sunken Bar) */}
+      {/* Filter Controls (Mbabane Neighborhoods) */}
       <div className="neu-flat p-4 sm:p-5">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          {/* Town Pills */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-            <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider">Town:</span>
+            <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider">Neighborhood:</span>
             <div className="neu-pressed p-1 rounded-2xl flex items-center gap-1">
-              {["ALL", "Mbabane", "Ezulwini", "Matsapha", "Manzini", "Nhlangano"].map(t => (
+              {neighborhoods.map(hood => (
                 <button
-                  key={t}
-                  onClick={() => setSelectedTown(t)}
+                  key={hood}
+                  onClick={() => setSelectedNeighborhood(hood)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-                    selectedTown === t
+                    selectedNeighborhood === hood
                       ? "neu-btn text-swazi-blue bg-[#e9eef5] shadow-sm"
                       : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
-                  {t === "ALL" ? "All Eswatini" : t}
+                  {hood === "ALL" ? "All Mbabane" : hood}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Sector Selector */}
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider">Sector:</span>
             <select
@@ -141,7 +155,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
         </div>
       </div>
 
-      {/* Accepted Contact Banner (Frosted Glass with Emerald Glow) */}
+      {/* Accepted Contact Banner */}
       {acceptedContact && (
         <div className="glass-card p-5 sm:p-6 border-2 border-emerald-400/80 shadow-xl animate-fade-in">
           <div className="flex items-start justify-between gap-3">
@@ -191,14 +205,11 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-            <span>Active Reverse Auctions</span>
-            <span className="glass-pill px-2.5 py-0.5 rounded-full text-xs font-bold text-swazi-blue">
-              {filteredRequests.length}
-            </span>
+            <span>Mbabane Job Requests ({filteredRequests.length})</span>
           </h2>
           <span className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Real-time telemetry
+            Real-time live updates
           </span>
         </div>
 
@@ -209,8 +220,8 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
         ) : filteredRequests.length === 0 ? (
           <div className="neu-flat p-12 text-center">
             <AlertCircle className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-            <h3 className="font-extrabold text-slate-700">No active requests in this filter</h3>
-            <p className="text-xs text-slate-400 mt-1">Be the first to post a need in this category or town!</p>
+            <h3 className="font-extrabold text-slate-700">No active requests in this neighborhood</h3>
+            <p className="text-xs text-slate-400 mt-1">Be the first to post a need!</p>
             <button
               onClick={onOpenPostModal}
               className="mt-4 neu-btn-primary px-5 py-2 rounded-2xl text-xs font-bold"
@@ -235,11 +246,11 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
                       </span>
                       <span className="flex items-center gap-1 text-[11px] font-bold text-slate-500">
                         <MapPin className="w-3 h-3 text-red-500" />
-                        {req.town}
+                        {req.neighborhood}, Mbabane
                       </span>
                       {req.deliveryNeeded && (
                         <span className="glass-pill text-[10px] text-amber-700 font-bold px-2.5 py-0.5 rounded-full">
-                          Delivery Needed
+                          Travel to premises
                         </span>
                       )}
                     </div>
@@ -271,25 +282,32 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
                   {req.description}
                 </p>
 
-                {/* Footer status & bids count */}
+                {/* Footer status & Action */}
                 <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2 text-slate-400 font-medium text-[11px]">
                     <Clock className="w-3.5 h-3.5 text-amber-500" />
                     <span>Window: {req.biddingWindowHours}h • Status: <strong className="text-slate-600 uppercase font-bold">{req.status}</strong></span>
                   </div>
 
-                  <button
-                    onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
-                    className="neu-btn px-3 py-1 rounded-xl text-xs font-black text-swazi-blue flex items-center gap-1.5"
-                  >
-                    <span>View Offers</span>
-                    <span className="neu-pressed px-2 py-0.2 rounded-full text-[10px] text-slate-800 font-black">
-                      {req.bids?.length || 0}
-                    </span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setActiveRequestForBid(req)}
+                      className="neu-btn-success px-3 py-1 rounded-xl text-xs font-black flex items-center gap-1"
+                    >
+                      <DollarSign className="w-3.5 h-3.5" />
+                      <span>Bid on This</span>
+                    </button>
+
+                    <button
+                      onClick={() => setExpandedRequestId(isExpanded ? null : req.id)}
+                      className="neu-btn px-3 py-1 rounded-xl text-xs font-black text-swazi-blue flex items-center gap-1.5"
+                    >
+                      <span>Bids ({req.bids?.length || 0})</span>
+                    </button>
+                  </div>
                 </div>
 
-                {/* Expanded Bids Section (Sunken Neumorphic Container) */}
+                {/* Expanded Bids Section */}
                 {isExpanded && (
                   <div className="mt-4 pt-4 border-t border-slate-200/80 space-y-3">
                     <div className="flex items-center justify-between">
@@ -303,7 +321,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
 
                     {!req.bids || req.bids.length === 0 ? (
                       <div className="neu-pressed p-4 text-center text-xs text-slate-500 rounded-xl">
-                        No bids submitted yet. Providers in {req.town} have been alerted.
+                        No bids submitted yet for this Mbabane request. Be the first provider to bid!
                       </div>
                     ) : (
                       req.bids.map(bid => (
@@ -328,7 +346,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
                               </span>
                               {bid.deliveryFeeSzl > 0 && (
                                 <span className="text-[10px] text-slate-500 block">
-                                  (SZL {bid.priceSzl} + SZL {bid.deliveryFeeSzl} delivery)
+                                  (SZL {bid.priceSzl} + SZL {bid.deliveryFeeSzl} travel)
                                 </span>
                               )}
                             </div>
@@ -372,6 +390,17 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
           })
         )}
       </div>
+
+      {/* Bid Modal */}
+      <BidModal
+        isOpen={!!activeRequestForBid}
+        onClose={() => setActiveRequestForBid(null)}
+        request={activeRequestForBid}
+        onSubmitSuccess={() => {
+          fetchRequests();
+          alert("Your bid was submitted! The seeker has been notified.");
+        }}
+      />
     </div>
   );
 };

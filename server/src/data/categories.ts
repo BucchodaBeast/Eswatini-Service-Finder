@@ -5,288 +5,158 @@ export interface CategoryItem {
   spectrum: "INFORMAL" | "FORMAL" | "DUAL";
   defaultRadiusKm: number;
   description: string;
+  keywords: string[];
   popularLocations: string[];
 }
 
 export const ESWATINI_CATEGORIES: CategoryItem[] = [
-  // 1. Street Food & Local Catering
+  // 1. Personal Care & Grooming
   {
-    id: "chicken-dust-braai",
-    name: "Chicken Dust & Street Braai",
-    sector: "Food & Catering",
+    id: "hair-styling-braids",
+    name: "Hair Styling, Braiding & Salons",
+    sector: "Beauty & Grooming",
+    spectrum: "DUAL",
+    defaultRadiusKm: 5,
+    description: "Knotless braids, dreadlocks, wash & set, wig installation, and township barbers.",
+    keywords: ["hairstylist", "hair", "braids", "salon", "barber", "haircut", "wig", "locks", "twists"],
+    popularLocations: ["Mbabane Bus Rank", "Swazi Plaza Walkway", "Msunduza", "The Mall"]
+  },
+  {
+    id: "nail-tech-services",
+    name: "Nail Technicians & Manicures",
+    sector: "Beauty & Grooming",
     spectrum: "INFORMAL",
-    defaultRadiusKm: 10,
-    description: "Flame-grilled chicken portions, pap (lipaleshi), and slaai at local spots and markets.",
-    popularLocations: ["Manzini Market", "Mbabane Bus Rank", "Matsapha Industrial", "Kwaluseni"]
-  },
-  {
-    id: "event-catering-spitbraai",
-    name: "Event Catering & Spit Braai",
-    sector: "Food & Catering",
-    spectrum: "DUAL",
-    defaultRadiusKm: 30,
-    description: "Weddings, traditional ceremonies (Umutimba/Lusekwane), and corporate events.",
-    popularLocations: ["Ezulwini Valley", "Mbabane", "Manzini", "Mhlambanyatsi"]
-  },
-  {
-    id: "custom-cakes-bakery",
-    name: "Custom Cakes & Baking",
-    sector: "Food & Catering",
-    spectrum: "DUAL",
-    defaultRadiusKm: 20,
-    description: "Birthday cakes, celebration platters, and traditional baked treats.",
-    popularLocations: ["Mbabane", "Ezulwini", "Manzini"]
+    defaultRadiusKm: 5,
+    description: "Acrylic tips, gel overlay, press-ons, pedicure, manicure, and mobile nail art.",
+    keywords: ["nail tech", "nails", "acrylic", "gel", "pedicure", "manicure", "nail artist"],
+    popularLocations: ["Bus Rank Container 8", "Swazi Plaza", "Eveni (Mobile)", "Woodlands"]
   },
 
-  // 2. Personal Care & Grooming
+  // 2. Street Food & Local Eateries
   {
-    id: "township-barbers",
-    name: "Township Barbers & Haircuts",
-    sector: "Personal Care",
+    id: "food-stalls-street-braai",
+    name: "Food Stalls, Chicken Dust & Kotas",
+    sector: "Food & Refreshment",
     spectrum: "INFORMAL",
+    defaultRadiusKm: 5,
+    description: "Fresh flame-grilled chicken dust, pap and slaai, kotas, magwinya (fat cakes), and lunch plates.",
+    keywords: ["food stall", "chicken dust", "braai", "food", "kota", "magwinya", "lunch", "eating", "restaurant"],
+    popularLocations: ["Mbabane Market", "Main Bus Rank", "Sheffield Road", "Msunduza"]
+  },
+  {
+    id: "event-catering-baking",
+    name: "Event Catering & Home Baking",
+    sector: "Food & Refreshment",
+    spectrum: "DUAL",
+    defaultRadiusKm: 15,
+    description: "Platters, birthday cakes, family spit braai, and traditional ceremony food.",
+    keywords: ["catering", "cake", "baking", "spit braai", "pastries", "chef"],
+    popularLocations: ["Eveni", "Mountain View", "Checkers", "Swazi Plaza"]
+  },
+
+  // 3. Printing, Copying & Internet
+  {
+    id: "printing-copying-internet",
+    name: "Printing, Photocopying & Stationery",
+    sector: "Office & Media",
+    spectrum: "DUAL",
+    defaultRadiusKm: 6,
+    description: "Colour printing, photocopy, document binding, passport photos, scanning, and typing.",
+    keywords: ["printing shop", "printing", "photocopy", "copy", "passport photo", "internet cafe", "typing", "binding", "stationery"],
+    popularLocations: ["Sheffield Road", "The Mall 1st Floor", "Corporate Place", "Swazi Plaza"]
+  },
+
+  // 4. Fueling & Service Stations
+  {
+    id: "fueling-stations",
+    name: "Fueling Stations & 24h Express",
+    sector: "Automotive & Energy",
+    spectrum: "FORMAL",
     defaultRadiusKm: 8,
-    description: "Local barber kiosks and mobile haircut services.",
-    popularLocations: ["Manzini Bus Rank", "Mbabane Msunduza", "Matsapha Mobeni", "Nhlangano"]
-  },
-  {
-    id: "braiding-hair-salons",
-    name: "Hair Braiding, Weaves & Dreadlocks",
-    sector: "Personal Care",
-    spectrum: "DUAL",
-    defaultRadiusKm: 15,
-    description: "Knotless braids, dreadlock maintenance, and hair styling.",
-    popularLocations: ["President Centre Manzini", "Mbabane Mall", "Ezulwini Corner Plaza"]
-  },
-  {
-    id: "mobile-nails-makeup",
-    name: "Mobile Nails & Makeup Artistry",
-    sector: "Personal Care",
-    spectrum: "DUAL",
-    defaultRadiusKm: 25,
-    description: "Bridal makeup, acrylics, gel nails, and home visits.",
-    popularLocations: ["Ezulwini", "Mbabane", "Manzini"]
+    description: "Petrol, diesel, tyre air pressure, oil checks, and 24-hour convenience express stores.",
+    keywords: ["fueling station", "petrol station", "fuel", "petrol", "diesel", "garage", "gas", "shell", "total", "galp", "puma"],
+    popularLocations: ["Mbabane By-Pass", "Sheffield Road", "Malagwane Hill", "Msunduza"]
   },
 
-  // 3. Transport & Haulage
+  // 5. Healthcare, Clinics & Pharmacies
   {
-    id: "bakkie-hire-moving",
-    name: "Bakkie Hire & Local Moving",
-    sector: "Transport & Logistics",
-    spectrum: "DUAL",
-    defaultRadiusKm: 35,
-    description: "Pickup trucks and light trucks for household moving, furniture delivery, and farm produce.",
-    popularLocations: ["Manzini", "Mbabane", "Matsapha", "Ezulwini"]
-  },
-  {
-    id: "breakdown-towing",
-    name: "Breakdown & Towing Services",
-    sector: "Transport & Logistics",
+    id: "hospitals-clinics-pharmacy",
+    name: "Hospitals, Clinics & Pharmacies",
+    sector: "Health & Medical",
     spectrum: "FORMAL",
-    defaultRadiusKm: 50,
-    description: "24/7 vehicle recovery along MR3 highway, Malagwane hill, and national routes.",
-    popularLocations: ["MR3 Corridor", "Mbabane", "Manzini", "Matsapha"]
-  },
-  {
-    id: "kombi-private-shuttle",
-    name: "Private Shuttles & Airport Transfers",
-    sector: "Transport & Logistics",
-    spectrum: "DUAL",
-    defaultRadiusKm: 60,
-    description: "King Mswati III International (KMIII) transfers, cross-border to O.R. Tambo, and group trips.",
-    popularLocations: ["Sikhuphe (KMIII)", "Mbabane", "Manzini", "Ezulwini"]
+    defaultRadiusKm: 10,
+    description: "Emergency rooms, general practitioners, private clinics, prescription medicine, and wellness.",
+    keywords: ["hospital", "clinic", "pharmacy", "doctor", "chemist", "medication", "emergency", "health", "nurse"],
+    popularLocations: ["Mbabane Government Hospital", "Corporate Place", "The Mall", "Swazi Plaza"]
   },
 
-  // 4. Welding, Steel & Construction Trades
+  // 6. Automotive, Mechanics & Tyres
   {
-    id: "welding-burglar-proofing",
-    name: "Welding, Burglar Gates & Carports",
-    sector: "Trades & Construction",
+    id: "mechanics-tyres-puncture",
+    name: "Auto Mechanics & Roadside Tyres",
+    sector: "Automotive & Energy",
     spectrum: "DUAL",
-    defaultRadiusKm: 30,
-    description: "Custom security gates, window burglar guards, tank stands, and steel carports.",
-    popularLocations: ["Matsapha Industrial", "Mbabane Sheffield Rd", "Manzini Light Industrial"]
+    defaultRadiusKm: 10,
+    description: "Engine diagnostics, mobile roadside help, tyre puncture repairs, wheel alignment, battery jumpstart.",
+    keywords: ["mechanic", "tyre", "puncture", "auto", "car repair", "battery", "breakdown", "wheel"],
+    popularLocations: ["Sheffield Road", "Sidwashini", "Checkers", "By-Pass"]
   },
-  {
-    id: "plumbing-water-tanks",
-    name: "Plumbing & JoJo Tank Installation",
-    sector: "Trades & Construction",
-    spectrum: "DUAL",
-    defaultRadiusKm: 30,
-    description: "Leak repairs, geysers, pipe fittings, and rainwater harvesting / booster pumps.",
-    popularLocations: ["Mbabane", "Ezulwini", "Manzini", "Matsapha"]
-  },
-  {
-    id: "electricians-solar-inverters",
-    name: "Electricians, Solar & Inverters",
-    sector: "Trades & Construction",
-    spectrum: "DUAL",
-    defaultRadiusKm: 40,
-    description: "House wiring, fault finding, backup solar batteries, and inverter installations.",
-    popularLocations: ["Mbabane", "Manzini", "Ezulwini", "Piggs Peak"]
-  },
-  {
-    id: "borehole-siting-drilling",
-    name: "Borehole Siting, Drilling & Pumps",
-    sector: "Trades & Construction",
-    spectrum: "FORMAL",
-    defaultRadiusKm: 70,
-    description: "Geological survey, borehole drilling, casing, and submersible pump setup.",
-    popularLocations: ["Lowveld", "Manzini Peri-Urban", "Shiselweni", "Lubombo"]
-  },
-  {
-    id: "gardening-tree-felling",
-    name: "Gardening, Landscaping & Tree Felling",
-    sector: "Trades & Construction",
-    spectrum: "INFORMAL",
-    defaultRadiusKm: 20,
-    description: "Lawn mowing, hedge trimming, garden design, and hazardous tree felling.",
-    popularLocations: ["Mbabane", "Ezulwini", "Malkerns"]
-  },
-
-  // 5. Automotive & Mechanical Services
-  {
-    id: "mobile-mechanic-roadside",
-    name: "Mobile Mechanics & Roadside Assistance",
-    sector: "Automotive",
-    spectrum: "DUAL",
-    defaultRadiusKm: 30,
-    description: "On-site engine repairs, starter motors, alternators, and roadside diagnostics.",
-    popularLocations: ["Mbabane", "Matsapha", "Manzini"]
-  },
-  {
-    id: "auto-body-spray-painting",
-    name: "Auto Body Repair & Panel Beating",
-    sector: "Automotive",
-    spectrum: "DUAL",
-    defaultRadiusKm: 30,
-    description: "Dent removal, chassis straightening, and spray painting.",
-    popularLocations: ["Matsapha", "Mbabane Industrial", "Manzini Industrial"]
-  },
-  {
-    id: "tyres-wheel-alignment",
-    name: "Tyres, Puncture Repairs & Alignment",
-    sector: "Automotive",
-    spectrum: "DUAL",
-    defaultRadiusKm: 25,
-    description: "New and retread tyres, 3D wheel alignment, and roadside puncture repairs.",
-    popularLocations: ["Manzini", "Mbabane", "Matsapha"]
-  },
-
-  // 6. Traditional & Custom Tailoring
-  {
-    id: "swazi-traditional-attire",
-    name: "Swazi Traditional Attire & Regalia",
-    sector: "Tailoring & Fashion",
-    spectrum: "INFORMAL",
-    defaultRadiusKm: 25,
-    description: "Handcrafted emahiya, incwancwa, sidvwaba (cowhide skirt), and cultural beadwork.",
-    popularLocations: ["Manzini Market", "Mbabane", "Ezulwini Cultural Village"]
-  },
-  {
-    id: "tailoring-school-uniforms",
-    name: "Seamstresses, Tailors & Uniforms",
-    sector: "Tailoring & Fashion",
-    spectrum: "DUAL",
-    defaultRadiusKm: 20,
-    description: "Suit tailoring, dressmaking, curtains, and school uniform alterations.",
-    popularLocations: ["Manzini President Centre", "Mbabane New Mall", "Nhlangano"]
-  },
-
-  // 7. Tech, Electronics & Appliances
-  {
-    id: "phone-tablet-repair",
-    name: "Smartphone & Tablet Screen Repairs",
-    sector: "Electronics & Tech",
-    spectrum: "DUAL",
-    defaultRadiusKm: 15,
-    description: "iPhone/Samsung screens, charging ports, battery replacements, and unlocking.",
-    popularLocations: ["Mbabane Plaza", "Manzini Bhunu Mall", "Matsapha Complex"]
-  },
-  {
-    id: "dstv-satellite-installers",
-    name: "DSTV & Satellite TV Installers",
-    sector: "Electronics & Tech",
-    spectrum: "DUAL",
-    defaultRadiusKm: 30,
-    description: "Decoder dish alignment, extra view setup, signal troubleshooting, and mounting.",
-    popularLocations: ["Mbabane", "Ezulwini", "Manzini", "Matsapha"]
-  },
-  {
-    id: "refrigeration-appliance-repair",
-    name: "Fridge, Washing Machine & AC Repairs",
-    sector: "Electronics & Tech",
-    spectrum: "DUAL",
-    defaultRadiusKm: 30,
-    description: "Gas regassing, cooling diagnostics, and commercial cold room servicing.",
-    popularLocations: ["Matsapha", "Manzini", "Mbabane"]
-  },
-
-  // 8. Cleaning & Sanitation
   {
     id: "car-wash-valet",
     name: "Car Wash & Mobile Valet",
-    sector: "Cleaning Services",
+    sector: "Automotive & Energy",
     spectrum: "INFORMAL",
-    defaultRadiusKm: 10,
-    description: "Exterior wash, interior shampoo, engine bay cleaning, and mobile driveway visits.",
-    popularLocations: ["Ezulwini Gables", "Mbabane Checkers", "Manzini Club"]
-  },
-  {
-    id: "carpet-couch-cleaning",
-    name: "Carpet & Couch Deep Cleaning",
-    sector: "Cleaning Services",
-    spectrum: "DUAL",
-    defaultRadiusKm: 25,
-    description: "Steam extraction for rugs, upholstery, car seats, and mattresses.",
-    popularLocations: ["Mbabane", "Ezulwini", "Manzini"]
+    defaultRadiusKm: 6,
+    description: "Hand wash, foam spray, interior vacuuming, polish, and mobile driveway visits.",
+    keywords: ["car wash", "car valet", "car cleaning", "vehicle wash", "wash bay"],
+    popularLocations: ["Checkers", "Sheffield Road", "Msunduza", "Sidwashini"]
   },
 
-  // 9. Professional & Compliance Services
+  // 7. Trades, Plumbing & Electrical
   {
-    id: "tax-pin-ers-accounting",
-    name: "Tax PIN, ERS Returns & Bookkeeping",
-    sector: "Professional Services",
-    spectrum: "FORMAL",
-    defaultRadiusKm: 50,
-    description: "Eswatini Revenue Service (ERS) tax clearance, VAT, PAYE, and financial statements.",
-    popularLocations: ["Mbabane", "Manzini"]
-  },
-  {
-    id: "company-registration-licensing",
-    name: "Company Registration & Trading Licenses",
-    sector: "Professional Services",
-    spectrum: "FORMAL",
-    defaultRadiusKm: 50,
-    description: "Form J/Form C filings, registrar of companies, and municipal health inspections.",
-    popularLocations: ["Mbabane Ministry of Commerce", "Manzini"]
+    id: "plumbers-electricians-handyman",
+    name: "Plumbers, Electricians & Handymen",
+    sector: "Home & Repairs",
+    spectrum: "DUAL",
+    defaultRadiusKm: 15,
+    description: "Burst pipes, geysers, JoJo water tanks, home wiring, solar backup, appliance & microwave repair.",
+    keywords: ["plumber", "electrician", "handyman", "pipes", "geyser", "wiring", "solar", "appliance repair", "microwave", "stove"],
+    popularLocations: ["Eveni", "Msunduza", "Fonteyn", "Sidwashini"]
   },
 
-  // 10. Financial Access Points (Mapped directly in Geospatial Engine)
+  // 8. Tailoring, Seamstresses & Traditional Regalia
   {
-    id: "mtn-momo-agent",
-    name: "MTN MoMo Cash-In / Cash-Out Agent",
-    sector: "Financial Nodes",
+    id: "tailoring-traditional-attire",
+    name: "Seamstresses, Tailors & Swazi Regalia",
+    sector: "Tailoring & Fashion",
+    spectrum: "INFORMAL",
+    defaultRadiusKm: 8,
+    description: "School uniforms, zip repairs, suit adjustments, handcrafted emahiya, and sidvwaba regalia.",
+    keywords: ["tailor", "seamstress", "dressmaker", "uniform", "alterations", "traditional attire", "lihiya", "incwancwa"],
+    popularLocations: ["Mbabane Market", "Swazi Plaza", "Msunduza"]
+  },
+
+  // 9. Smartphone & Tech Repairs
+  {
+    id: "phone-tech-repairs",
+    name: "Phone Screen & Laptop Repairs",
+    sector: "Electronics & Tech",
     spectrum: "DUAL",
-    defaultRadiusKm: 5,
-    description: "Mobile Money deposit, withdrawal, and cash-voucher redemptions.",
-    popularLocations: ["All urban centers, bus ranks, and rural trading stores"]
+    defaultRadiusKm: 6,
+    description: "Broken screen replacement, charging ports, battery swap, software flashing, DSTV dish setup.",
+    keywords: ["phone repair", "screen repair", "laptop repair", "dstv", "technician", "iphone", "samsung", "electronics"],
+    popularLocations: ["Mbabane Bus Rank Kiosks", "Swazi Plaza", "The Mall"]
   },
+
+  // 10. Financial Access Points
   {
-    id: "fnb-cashplus-agent",
-    name: "FNB CashPlus Retail Agent",
+    id: "financial-momo-atms",
+    name: "ATMs, MoMo & CashPlus Outlets",
     sector: "Financial Nodes",
     spectrum: "FORMAL",
     defaultRadiusKm: 5,
-    description: "Deposits, withdrawals, and payments at authorized neighbourhood grocery stores.",
-    popularLocations: ["Pick n Pay, local supermarkets, and corner stores"]
-  },
-  {
-    id: "bank-atm-access",
-    name: "Commercial Bank ATM",
-    sector: "Financial Nodes",
-    spectrum: "FORMAL",
-    defaultRadiusKm: 5,
-    description: "FNB Eswatini, Standard Bank, Nedbank, and Eswatini Building Society (SBS) ATMs.",
-    popularLocations: ["Mbabane Mall, Manzini Bhunu Mall, Ezulwini Gables, Matsapha Mahhala"]
+    description: "MTN MoMo cash-in/cash-out, FNB CashPlus, Nedbank Unayo, and commercial bank ATMs.",
+    keywords: ["atm", "momo", "cashplus", "cash out", "deposit", "money", "bank", "fnb", "standard bank", "sbs"],
+    popularLocations: ["Swazi Plaza", "Bus Rank", "Corporate Place", "The Mall"]
   }
 ];

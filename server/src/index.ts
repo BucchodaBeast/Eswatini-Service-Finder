@@ -13,21 +13,36 @@ app.use(express.json());
 app.get("/api/health", (_req: Request, res: Response) => {
   res.json({
     status: "healthy",
-    platform: "Eswatini Service & Product Finder",
+    platform: "Eswatini Service & Product Finder (Mbabane Edition)",
     time: new Date().toISOString(),
     env: process.env.NODE_ENV || "development"
   });
 });
 
-// 2. Categories API
+// 2. Natural Prompt & Proximity Search API (e.g. "nearest hairstylist", "nearest hospital", "nearest food stall")
+app.get("/api/search", (req: Request, res: Response) => {
+  const query = (req.query.q as string) || "";
+  const neighborhood = (req.query.neighborhood as string) || "ALL";
+
+  const results = db.searchProviders(query, neighborhood);
+  res.json({
+    success: true,
+    query,
+    neighborhood,
+    count: results.length,
+    data: results
+  });
+});
+
+// 3. Categories API
 app.get("/api/categories", (_req: Request, res: Response) => {
   res.json({ success: true, count: db.getCategories().length, data: db.getCategories() });
 });
 
-// 3. Financial Nodes API (ATMs & MoMo / CashPlus agents)
+// 4. Financial Nodes API (ATMs & MoMo / CashPlus agents)
 app.get("/api/nodes", (req: Request, res: Response) => {
-  const town = req.query.town as string | undefined;
-  const nodes = db.getFinancialNodes(town);
+  const neighborhood = req.query.neighborhood as string | undefined;
+  const nodes = db.getFinancialNodes(neighborhood);
   res.json({ success: true, count: nodes.length, data: nodes });
 });
 
@@ -38,13 +53,104 @@ app.post("/api/nodes/:id/report", (req: Request, res: Response) => {
   if (!updated) {
     return res.status(404).json({ success: false, error: "Node not found" });
   }
-  res.json({ success: true, message: "Report submitted. Thank you for helping fellow Emaswati!", data: updated });
+  res.json({ success: true, message: "Report submitted. Thank you for helping fellow Emaswati in Mbabane!", data: updated });
 });
 
-// 4. Reverse Auction Requests API
+// 5. Providers & Reviews API
+app.get("/api/providers", (req: Request, res: Response) => {
+  const neighborhood = req.query.neighborhood as string | undefined;
+  const providers = db.getProviders(neighborhood);
+  res.json({ success: true, count: providers.length, data: providers });
+});
+
+app.get("/api/providers/:id", (req: Request, res: Response) => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const provider = db.getProviderById(id);
+  if (!provider) {
+    return res.status(404).json({ success: false, error: "Provider not found" });
+  }
+  res.json({ success: true, data: provider });
+});
+
+app.post("/api/providers/:id/reviews", (req: Request, res: Response) => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const { userName, rating, comment, serviceRendered } = req.body;
+
+  if (!userName || !rating || !comment) {
+    return res.status(400).json({ success: false, error: "Name, rating (1-5), and comment are required." });
+  }
+
+  const review = db.addReview(id, {
+    userName,
+    rating: Number(rating),
+    comment,
+    serviceRendered: serviceRendered || "General Service",
+    verifiedClient: true
+  });
+
+  if (!review) {
+    return res.status(404).json({ success: false, error: "Provider not found." });
+  }
+
+  res.status(201).json({
+    success: true,
+    message: "Thank you! Your review has been added and helps others find reliable services.",
+    data: review
+  });
+});
+
+app.post("/api/providers", (req: Request, res: Response) => {
+  const {
+    fullName,
+    businessName,
+    phoneNumber,
+    tier,
+    nationalIdNumber,
+    taxPin,
+    neighborhood,
+    exactLocation,
+    serviceRadiusKm,
+    categoryIds,
+    servicesOffered,
+    startingPriceSzl,
+    bio
+  } = req.body;
+
+  if (!businessName || !phoneNumber) {
+    return res.status(400).json({ success: false, error: "Business/Trade name and phone number are required." });
+  }
+
+  const newProvider = db.registerProvider({
+    fullName: fullName || businessName,
+    businessName,
+    phoneNumber,
+    tier: tier || (nationalIdNumber ? "TIER1_ID_VERIFIED" : "INFORMAL_UNVERIFIED"),
+    nationalIdNumber,
+    taxPin,
+    town: "Mbabane",
+    neighborhood: neighborhood || "Mbabane CBD",
+    exactLocation: exactLocation || "Mbabane Central",
+    latitude: -26.3265,
+    longitude: 31.1442,
+    serviceRadiusKm: Number(serviceRadiusKm) || 10,
+    categoryIds: categoryIds || ["general"],
+    servicesOffered: Array.isArray(servicesOffered) ? servicesOffered : (servicesOffered ? [servicesOffered] : [businessName]),
+    startingPriceSzl: startingPriceSzl ? Number(startingPriceSzl) : undefined,
+    bio: bio || "Independent service provider in Mbabane ready to assist with high quality work.",
+    isAvailable: true
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Provider listed successfully in Mbabane Service Finder!",
+    data: newProvider
+  });
+});
+
+// 6. Reverse Auction Requests API
 app.get("/api/requests", (req: Request, res: Response) => {
-  const { status, categoryId, town } = req.query;
-  const requests = db.getRequests(status as string, categoryId as string, town as string);
+  const { status, categoryId, neighborhood } = req.query;
+  const requests = db.getRequests(status as string, categoryId as string, neighborhood as string);
   res.json({ success: true, count: requests.length, data: requests });
 });
 
@@ -68,29 +174,30 @@ app.post("/api/requests", (req: Request, res: Response) => {
     title,
     description,
     budgetSzl,
-    town,
+    neighborhood,
     latitude,
     longitude,
     deliveryNeeded,
     biddingWindowHours
   } = req.body;
 
-  if (!title || !description || !budgetSzl || !town || !customerPhone) {
-    return res.status(400).json({ success: false, error: "Missing required fields (title, description, budget, town, phone)" });
+  if (!title || !description || !budgetSzl || !customerPhone) {
+    return res.status(400).json({ success: false, error: "Missing required fields (title, description, budget, phone)" });
   }
 
   const newRequest = db.createRequest({
     customerId: customerId || `cust-${Date.now()}`,
-    customerName: customerName || "Anonymous Seeker",
+    customerName: customerName || "Customer",
     customerPhone,
     categoryId: categoryId || "general",
     categoryName: categoryName || "General Service",
     title,
     description,
     budgetSzl: Number(budgetSzl),
-    town,
-    latitude: Number(latitude) || -26.4960,
-    longitude: Number(longitude) || 31.3735,
+    town: "Mbabane",
+    neighborhood: neighborhood || "Mbabane CBD",
+    latitude: Number(latitude) || -26.3265,
+    longitude: Number(longitude) || 31.1442,
     deliveryNeeded: Boolean(deliveryNeeded),
     biddingWindowHours: Number(biddingWindowHours) || 12
   });
@@ -98,7 +205,7 @@ app.post("/api/requests", (req: Request, res: Response) => {
   res.status(201).json({ success: true, data: newRequest });
 });
 
-// 5. Provider Bids API
+// 7. Provider Bids API
 app.post("/api/bids", (req: Request, res: Response) => {
   const {
     requestId,
@@ -140,17 +247,17 @@ app.post("/api/bids/accept", (req: Request, res: Response) => {
     return res.status(400).json({ success: false, error: "Invalid request or bid ID" });
   }
 
-  // Generate zero-cost instant WhatsApp deep-link for the seeker to contact the winning provider
+  // Pre-fill free WhatsApp deep-link
   const cleanPhone = result.winningBid.providerPhone.replace(/[^0-9]/g, "");
   const waMessage = encodeURIComponent(
-    `Hello ${result.winningBid.providerBusiness}! I accepted your bid of SZL ${result.winningBid.priceSzl} on Eswatini Service Finder for "${result.request.title}". Let's arrange fulfillment.`
+    `Hello ${result.winningBid.providerBusiness}! I accepted your bid of SZL ${result.winningBid.priceSzl} on Mbabane Service Finder for "${result.request.title}". Let's arrange service.`
   );
   const directWhatsAppLink = `https://wa.me/${cleanPhone}?text=${waMessage}`;
   const directCallLink = `tel:${cleanPhone}`;
 
   res.json({
     success: true,
-    message: "Bid accepted successfully! Direct contact is now unlocked.",
+    message: "Bid accepted! Provider trust rating updated and direct contact unlocked.",
     data: {
       ...result,
       contactActions: {
@@ -162,70 +269,25 @@ app.post("/api/bids/accept", (req: Request, res: Response) => {
   });
 });
 
-// 6. Provider Registry API (Dual-Spectrum Onboarding)
-app.get("/api/providers", (_req: Request, res: Response) => {
-  res.json({ success: true, count: db.getProviders().length, data: db.getProviders() });
-});
-
-app.post("/api/providers", (req: Request, res: Response) => {
-  const {
-    fullName,
-    businessName,
-    phoneNumber,
-    tier,
-    nationalIdNumber,
-    taxPin,
-    town,
-    serviceRadiusKm,
-    categoryIds
-  } = req.body;
-
-  if (!businessName || !phoneNumber || !town) {
-    return res.status(400).json({ success: false, error: "Business name, phone number, and town are required" });
-  }
-
-  const newProvider = db.registerProvider({
-    fullName: fullName || businessName,
-    businessName,
-    phoneNumber,
-    tier: tier || (nationalIdNumber ? "TIER1_ID_VERIFIED" : "INFORMAL_UNVERIFIED"),
-    nationalIdNumber,
-    taxPin,
-    town,
-    latitude: -26.4960, // default town centroid
-    longitude: 31.3735,
-    serviceRadiusKm: Number(serviceRadiusKm) || 20,
-    categoryIds: categoryIds || [],
-    isAvailable: true
-  });
-
-  res.status(201).json({
-    success: true,
-    message: "Provider registered successfully in the Eswatini dual-spectrum registry",
-    data: newProvider
-  });
-});
-
-// 7. Eswatini Informal Economic Index (EIE) Analytics API
+// 8. Eswatini Informal Economic Index (EIE) Analytics API
 app.get("/api/analytics/eie", (_req: Request, res: Response) => {
   res.json({ success: true, data: db.getEieMetrics() });
 });
 
-// 8. Serve Client Static Build in Production (for Render Single-Service Deployment)
+// 9. Serve Client Static Build in Production
 const clientDist = path.join(__dirname, "../../client/dist");
 app.use(express.static(clientDist));
 
 app.get("*", (req: Request, res: Response) => {
-  // If not an API route, send index.html
   if (!req.path.startsWith("/api/")) {
     res.sendFile(path.join(clientDist, "index.html"), err => {
       if (err) {
-        res.status(200).send("Eswatini Service & Product Finder API is running. Client build in progress.");
+        res.status(200).send("Mbabane Service & Product Finder API is running.");
       }
     });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`[Eswatini Finder] Server running on http://localhost:${PORT}`);
+  console.log(`[Mbabane Finder] Server running on http://localhost:${PORT}`);
 });
