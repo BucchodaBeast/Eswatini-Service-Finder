@@ -20,6 +20,14 @@ export interface ProviderReview {
   verifiedClient: boolean;
 }
 
+export interface LandmarkSuggestion {
+  id: string;
+  landmark: string;
+  directionsGuide?: string;
+  submittedBy: string;
+  date: string;
+}
+
 export interface Provider {
   id: string;
   fullName: string;
@@ -31,6 +39,9 @@ export interface Provider {
   town: string;
   neighborhood: string;
   exactLocation: string;
+  closestLandmark: string; // Key Eswatini landmark! e.g. "Near Ka-Gogo Grocery", "Opposite Eswatini Post"
+  directionsGuide?: string; // e.g. "Turn left after the blue container, 2nd house with black gate"
+  userSuggestedLandmarks?: LandmarkSuggestion[];
   latitude: number;
   longitude: number;
   serviceRadiusKm: number;
@@ -89,6 +100,8 @@ export interface CustomerRequest {
   budgetSzl: number;
   town: string;
   neighborhood: string;
+  closestLandmark?: string;
+  directionsGuide?: string;
   latitude: number;
   longitude: number;
   deliveryNeeded: boolean;

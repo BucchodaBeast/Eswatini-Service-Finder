@@ -19,7 +19,7 @@ export const EieAnalyticsPage: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div className="neu-flat p-12 text-center text-slate-400 text-sm">Loading economic intelligence layer...</div>;
+    return <div className="neu-flat anim-shimmer p-12 text-center text-slate-400 text-sm">Loading economic intelligence layer...</div>;
   }
 
   if (!metrics) {
@@ -70,7 +70,7 @@ export const EieAnalyticsPage: React.FC = () => {
       </div>
 
       {/* Pricing Benchmarks Neumorphic Card */}
-      <div className="neu-flat p-6 sm:p-8 space-y-4">
+      <div className="neu-flat anim-card p-6 sm:p-8 space-y-4">
         <div>
           <h2 className="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-swazi-blue" />

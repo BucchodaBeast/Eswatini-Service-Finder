@@ -127,7 +127,7 @@ export const ProximitySearchPage: React.FC<ProximitySearchPageProps> = ({ onOpen
                 key={idx}
                 type="button"
                 onClick={() => handleQuickPrompt(p.text)}
-                className="neu-flat-sm px-2.5 py-1 rounded-xl text-[11px] font-bold text-slate-700 whitespace-nowrap hover:text-swazi-blue hover:scale-105 transition-all"
+                className="neu-flat-sm anim-chip px-2.5 py-1 rounded-xl text-[11px] font-bold text-slate-700 whitespace-nowrap hover:text-swazi-blue hover:scale-105 transition-all"
               >
                 {p.label}
               </button>
@@ -184,7 +184,7 @@ export const ProximitySearchPage: React.FC<ProximitySearchPageProps> = ({ onOpen
       {/* Providers Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading ? (
-          <div className="col-span-full neu-flat p-12 text-center text-slate-400 text-sm">
+          <div className="col-span-full neu-flat anim-shimmer p-12 text-center text-slate-400 text-sm">
             Scanning Mbabane for nearest providers...
           </div>
         ) : providers.length === 0 ? (
@@ -211,7 +211,7 @@ export const ProximitySearchPage: React.FC<ProximitySearchPageProps> = ({ onOpen
             return (
               <div
                 key={prov.id}
-                className="neu-flat p-5 flex flex-col justify-between transition-all hover:scale-[1.01]"
+                className="neu-flat anim-card p-5 flex flex-col justify-between cursor-pointer"
               >
                 <div>
                   {/* Badge Row */}

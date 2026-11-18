@@ -122,7 +122,7 @@ export const ProviderFeedPage: React.FC<ProviderFeedPageProps> = ({ categories }
           filtered.map(req => (
             <div
               key={req.id}
-              className="neu-flat p-5 sm:p-6 flex flex-col justify-between transition-all hover:scale-[1.01]"
+              className="neu-flat anim-card p-5 sm:p-6 flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between gap-2">

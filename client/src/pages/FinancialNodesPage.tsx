@@ -105,7 +105,7 @@ export const FinancialNodesPage: React.FC = () => {
       {/* Nodes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {loading ? (
-          <div className="col-span-full neu-flat p-12 text-center text-slate-400 text-sm">
+          <div className="col-span-full neu-flat anim-shimmer p-12 text-center text-slate-400 text-sm">
             Locating nearby financial nodes...
           </div>
         ) : filtered.length === 0 ? (
@@ -122,7 +122,7 @@ export const FinancialNodesPage: React.FC = () => {
             return (
               <div
                 key={node.id}
-                className="neu-flat p-5 flex flex-col justify-between transition-all hover:scale-[1.01]"
+                className="neu-flat anim-card p-5 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">

@@ -82,7 +82,7 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Header and Spectrum Switcher */}
-      <div className="neu-flat p-6 sm:p-8 text-center">
+      <div className="neu-flat anim-card p-6 sm:p-8 text-center">
         <span className="glass-pill text-[11px] font-black uppercase tracking-wider text-swazi-blue px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-2">
           <Sparkles className="w-3 h-3 text-amber-500" />
           Mbabane Provider Hub
@@ -145,7 +145,7 @@ export const RegisterProviderPage: React.FC<RegisterProviderPageProps> = ({
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="neu-flat p-6 sm:p-8 space-y-5 text-xs sm:text-sm">
+        <form onSubmit={handleSubmit} className="neu-flat anim-card p-6 sm:p-8 space-y-5 text-xs sm:text-sm">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">

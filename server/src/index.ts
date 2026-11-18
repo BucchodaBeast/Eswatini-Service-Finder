@@ -56,7 +56,7 @@ app.post("/api/nodes/:id/report", (req: Request, res: Response) => {
   res.json({ success: true, message: "Report submitted. Thank you for helping fellow Emaswati in Mbabane!", data: updated });
 });
 
-// 5. Providers & Reviews API
+// 5. Providers, Reviews & Landmarks API
 app.get("/api/providers", (req: Request, res: Response) => {
   const neighborhood = req.query.neighborhood as string | undefined;
   const providers = db.getProviders(neighborhood);
@@ -99,6 +99,31 @@ app.post("/api/providers/:id/reviews", (req: Request, res: Response) => {
   });
 });
 
+app.post("/api/providers/:id/landmarks", (req: Request, res: Response) => {
+  const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+  const { landmark, directionsGuide, submittedBy } = req.body;
+
+  if (!landmark) {
+    return res.status(400).json({ success: false, error: "Landmark description is required." });
+  }
+
+  const suggestion = db.addLandmarkSuggestion(id, {
+    landmark,
+    directionsGuide,
+    submittedBy: submittedBy || "Local Community Member"
+  });
+
+  if (!suggestion) {
+    return res.status(404).json({ success: false, error: "Provider not found." });
+  }
+
+  res.status(201).json({
+    success: true,
+    message: "Landmark added successfully! This helps others navigate in Mbabane without street numbers.",
+    data: suggestion
+  });
+});
+
 app.post("/api/providers", (req: Request, res: Response) => {
   const {
     fullName,
@@ -109,6 +134,8 @@ app.post("/api/providers", (req: Request, res: Response) => {
     taxPin,
     neighborhood,
     exactLocation,
+    closestLandmark,
+    directionsGuide,
     serviceRadiusKm,
     categoryIds,
     servicesOffered,
@@ -130,6 +157,8 @@ app.post("/api/providers", (req: Request, res: Response) => {
     town: "Mbabane",
     neighborhood: neighborhood || "Mbabane CBD",
     exactLocation: exactLocation || "Mbabane Central",
+    closestLandmark: closestLandmark || "Near Mbabane Central",
+    directionsGuide: directionsGuide || "",
     latitude: -26.3265,
     longitude: 31.1442,
     serviceRadiusKm: Number(serviceRadiusKm) || 10,
@@ -175,6 +204,8 @@ app.post("/api/requests", (req: Request, res: Response) => {
     description,
     budgetSzl,
     neighborhood,
+    closestLandmark,
+    directionsGuide,
     latitude,
     longitude,
     deliveryNeeded,
@@ -196,6 +227,8 @@ app.post("/api/requests", (req: Request, res: Response) => {
     budgetSzl: Number(budgetSzl),
     town: "Mbabane",
     neighborhood: neighborhood || "Mbabane CBD",
+    closestLandmark: closestLandmark || "",
+    directionsGuide: directionsGuide || "",
     latitude: Number(latitude) || -26.3265,
     longitude: Number(longitude) || 31.1442,
     deliveryNeeded: Boolean(deliveryNeeded),

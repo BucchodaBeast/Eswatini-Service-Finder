@@ -137,6 +137,152 @@
   box-shadow: 2px 2px 6px rgba(163, 177, 198, 0.2), -2px -2px 6px #ffffff;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   ANIMATED CARD SYSTEM — Staggered Entrance + Hover FX
+   ═══════════════════════════════════════════════════════════ */
+
+/* Base entrance: cards fade-up into view */
+@keyframes card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* Subtle shimmer sweep on load */
+@keyframes shimmer-sweep {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Gentle float idle for hero/accent cards */
+@keyframes float-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Pulse ring for live status dots */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  80% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* General fade-in for modals / banners */
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Animated Card (applied to grid items) ─────────────── */
+.anim-card {
+  opacity: 0;
+  animation: card-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow, opacity;
+}
+
+/* Staggered entrance delays via CSS custom property */
+.anim-card:nth-child(1)  { animation-delay: 0.04s; }
+.anim-card:nth-child(2)  { animation-delay: 0.1s; }
+.anim-card:nth-child(3)  { animation-delay: 0.16s; }
+.anim-card:nth-child(4)  { animation-delay: 0.22s; }
+.anim-card:nth-child(5)  { animation-delay: 0.28s; }
+.anim-card:nth-child(6)  { animation-delay: 0.34s; }
+.anim-card:nth-child(7)  { animation-delay: 0.38s; }
+.anim-card:nth-child(8)  { animation-delay: 0.42s; }
+.anim-card:nth-child(9)  { animation-delay: 0.46s; }
+.anim-card:nth-child(10) { animation-delay: 0.50s; }
+.anim-card:nth-child(11) { animation-delay: 0.54s; }
+.anim-card:nth-child(12) { animation-delay: 0.56s; }
+.anim-card:nth-child(n+13) { animation-delay: 0.58s; }
+
+/* Hover: lift + intensified neumorphic shadow + subtle glow */
+.anim-card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow:
+    10px 10px 24px #b8c4d4,
+    -10px -10px 24px #ffffff,
+    0 8px 32px rgba(0, 85, 165, 0.12);
+}
+
+/* Active / pressed state keeps the neumorphic press feel */
+.anim-card:active {
+  transform: translateY(0px) scale(0.995);
+  box-shadow:
+    inset 3px 3px 7px #cbd5e1,
+    inset -3px -3px 7px #ffffff;
+  transition-duration: 0.1s;
+}
+
+/* ── Shimmer overlay for loading skeleton cards ────────── */
+.anim-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.anim-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.45) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-sweep 1.8s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Floating accent for hero sections ─────────────────── */
+.anim-float {
+  animation: float-idle 4s ease-in-out infinite;
+}
+
+/* ── Live pulse ring (financial nodes, real-time dots) ─── */
+.anim-pulse-ring {
+  position: relative;
+}
+.anim-pulse-ring::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  animation: pulse-ring 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  pointer-events: none;
+}
+
+/* ── Quick-prompt chip bounce on tap ───────────────────── */
+@keyframes chip-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+.anim-chip:active {
+  animation: chip-pop 0.2s ease;
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+
 /* Custom scrollbars */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

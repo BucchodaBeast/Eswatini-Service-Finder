@@ -214,7 +214,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
         </div>
 
         {loading ? (
-          <div className="neu-flat p-12 text-center text-slate-400 text-sm">
+          <div className="neu-flat anim-shimmer p-12 text-center text-slate-400 text-sm">
             Loading active auctions...
           </div>
         ) : filteredRequests.length === 0 ? (
@@ -235,7 +235,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
             return (
               <div
                 key={req.id}
-                className="neu-flat p-5 sm:p-6 transition-all hover:scale-[1.005]"
+                className="neu-flat anim-card p-5 sm:p-6"
               >
                 {/* Header Row */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -327,7 +327,7 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({ categories, on
                       req.bids.map(bid => (
                         <div
                           key={bid.id}
-                          className={`neu-flat-sm p-4 space-y-2 transition-all ${
+                          className={`neu-flat-sm anim-card p-4 space-y-2 ${
                             bid.status === "ACCEPTED"
                               ? "border-2 border-emerald-400 bg-emerald-50/20"
                               : ""

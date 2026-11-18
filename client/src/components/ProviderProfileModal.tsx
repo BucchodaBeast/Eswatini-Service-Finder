@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { X, Star, ShieldCheck, MapPin, Phone, MessageCircle, CheckCircle2, Clock, DollarSign, Award, Send } from "lucide-react";
-import { Provider, ProviderReview } from "../types";
+import { X, Star, ShieldCheck, MapPin, Phone, MessageCircle, CheckCircle2, Clock, DollarSign, Award, Send, Compass, Plus, Navigation } from "lucide-react";
+import { Provider, ProviderReview, LandmarkSuggestion } from "../types";
 
 interface ProviderProfileModalProps {
   provider: Provider | null;
@@ -14,19 +14,26 @@ export const ProviderProfileModal: React.FC<ProviderProfileModalProps> = ({
   onReviewSubmitted
 }) => {
   const [reviews, setReviews] = useState<ProviderReview[]>(provider?.reviews || []);
+  const [landmarks, setLandmarks] = useState<LandmarkSuggestion[]>(provider?.userSuggestedLandmarks || []);
   const [userName, setUserName] = useState("");
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [serviceRendered, setServiceRendered] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState<"services" | "reviews">("services");
+  const [activeTab, setActiveTab] = useState<"services" | "landmarks" | "reviews">("services");
   const [feedbackSuccess, setFeedbackSuccess] = useState<string | null>(null);
+
+  // New Landmark form states
+  const [newLandmarkText, setNewLandmarkText] = useState("");
+  const [newDirectionsText, setNewDirectionsText] = useState("");
+  const [landmarkSubmitter, setLandmarkSubmitter] = useState("");
+  const [landmarkSuccess, setLandmarkSuccess] = useState<string | null>(null);
 
   if (!provider) return null;
 
   const cleanPhone = provider.phoneNumber.replace(/[^0-9]/g, "");
   const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(
-    `Hello ${provider.businessName}! I found your service profile on the Mbabane Service Finder and would like to inquire about your services.`
+    `Hello ${provider.businessName}! I found your service profile on the Mbabane Service Finder (Near ${provider.closestLandmark || provider.neighborhood}) and would like to inquire about your services.`
   )}`;
 
   const handleSubmitReview = async (e: React.FormEvent) => {
@@ -66,6 +73,40 @@ export const ProviderProfileModal: React.FC<ProviderProfileModalProps> = ({
       alert("Error submitting review");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleAddLandmark = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLandmarkText) return;
+
+    try {
+      const res = await fetch(`/api/providers/${provider.id}/landmarks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          landmark: newLandmarkText,
+          directionsGuide: newDirectionsText,
+          submittedBy: landmarkSubmitter || "Community Member"
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setLandmarks([data.data, ...landmarks]);
+        setNewLandmarkText("");
+        setNewDirectionsText("");
+        setLandmarkSuccess("Landmark added! Thank you for helping people navigate without street numbers.");
+        
+        const updatedProvider: Provider = {
+          ...provider,
+          closestLandmark: provider.closestLandmark || data.data.landmark,
+          userSuggestedLandmarks: [data.data, ...landmarks]
+        };
+        onReviewSubmitted(updatedProvider);
+      }
+    } catch (err) {
+      alert("Error submitting landmark");
     }
   };
 
@@ -142,12 +183,43 @@ export const ProviderProfileModal: React.FC<ProviderProfileModalProps> = ({
           </div>
         </div>
 
-        {/* Location Spot */}
-        <div className="mt-4 neu-flat-sm p-3 flex items-start gap-2.5 text-xs text-slate-700">
-          <MapPin className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
-          <div>
-            <span className="font-extrabold block text-slate-800">Exact Location / Operation:</span>
-            <span>{provider.exactLocation}</span>
+        {/* FEATURE: Hyper-Local Landmark & Last-Mile Directions */}
+        <div className="mt-4 neu-flat p-4 space-y-2 border-l-4 border-l-swazi-blue">
+          <div className="flex items-start gap-2">
+            <Compass className="w-4 h-4 text-swazi-blue flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <span className="text-[10px] font-black uppercase tracking-wider text-swazi-blue block">
+                Closest Recognizable Landmark:
+              </span>
+              <p className="text-xs font-black text-slate-800">
+                {provider.closestLandmark || "Mbabane Central Hub"}
+              </p>
+            </div>
+          </div>
+
+          {provider.directionsGuide && (
+            <div className="neu-pressed p-2.5 rounded-xl text-xs text-slate-700 space-y-1">
+              <span className="font-extrabold text-[10px] uppercase text-slate-500 flex items-center gap-1">
+                <Navigation className="w-3 h-3 text-emerald-600" />
+                Last-Mile Directions Guide:
+              </span>
+              <p className="text-[11px] leading-relaxed text-slate-600">
+                {provider.directionsGuide}
+              </p>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-[10px] text-slate-400">
+              Exact Spot: {provider.exactLocation}
+            </span>
+            <button
+              onClick={() => setActiveTab("landmarks")}
+              className="text-[11px] font-bold text-swazi-blue hover:underline flex items-center gap-1"
+            >
+              <Plus className="w-3 h-3" />
+              <span>Suggest Landmark</span>
+            </button>
           </div>
         </div>
 
@@ -171,23 +243,31 @@ export const ProviderProfileModal: React.FC<ProviderProfileModalProps> = ({
           </a>
         </div>
 
-        {/* Tab switch between Offerings & Reviews */}
-        <div className="mt-6 neu-pressed p-1 rounded-xl flex">
+        {/* Tab switch between Offerings, Landmarks & Reviews */}
+        <div className="mt-6 neu-pressed p-1 rounded-xl flex text-xs">
           <button
             onClick={() => setActiveTab("services")}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-black transition-all ${
+            className={`flex-1 py-1.5 rounded-lg font-black transition-all ${
               activeTab === "services" ? "neu-btn text-swazi-blue bg-[#e9eef5]" : "text-slate-500"
             }`}
           >
-            Services Offered ({provider.servicesOffered.length})
+            Services ({provider.servicesOffered.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("landmarks")}
+            className={`flex-1 py-1.5 rounded-lg font-black transition-all ${
+              activeTab === "landmarks" ? "neu-btn text-swazi-blue bg-[#e9eef5]" : "text-slate-500"
+            }`}
+          >
+            Landmarks ({landmarks.length + 1})
           </button>
           <button
             onClick={() => setActiveTab("reviews")}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-black transition-all ${
+            className={`flex-1 py-1.5 rounded-lg font-black transition-all ${
               activeTab === "reviews" ? "neu-btn text-swazi-blue bg-[#e9eef5]" : "text-slate-500"
             }`}
           >
-            Reviews & Ratings ({reviews.length})
+            Reviews ({reviews.length})
           </button>
         </div>
 
@@ -214,6 +294,102 @@ export const ProviderProfileModal: React.FC<ProviderProfileModalProps> = ({
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Landmarks Tab Content (Eswatini Address Helper) */}
+        {activeTab === "landmarks" && (
+          <div className="mt-4 space-y-4">
+            <div className="neu-flat p-4 space-y-2">
+              <span className="text-[10px] font-black uppercase text-slate-400 block">Primary Landmark:</span>
+              <p className="text-xs font-black text-slate-800">{provider.closestLandmark}</p>
+              {provider.directionsGuide && (
+                <p className="text-[11px] text-slate-600 italic">"{provider.directionsGuide}"</p>
+              )}
+            </div>
+
+            {/* Form to submit / add a landmark */}
+            <form onSubmit={handleAddLandmark} className="neu-flat p-4 space-y-3">
+              <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <Compass className="w-4 h-4 text-swazi-blue" />
+                <span>Add / Refine Landmark for this Location</span>
+              </h4>
+              <p className="text-[11px] text-slate-500">
+                Help fellow Emaswati find this stall or house without confusion.
+              </p>
+
+              {landmarkSuccess && (
+                <div className="p-2 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-bold">
+                  {landmarkSuccess}
+                </div>
+              )}
+
+              <div className="space-y-2 text-xs">
+                <div>
+                  <label className="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">
+                    Closest Landmark *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Opposite Bhembe Bottle Store / Next to Fonteyn Clinic"
+                    value={newLandmarkText}
+                    onChange={e => setNewLandmarkText(e.target.value)}
+                    className="neu-input w-full px-3 py-1.5 rounded-lg text-slate-800 text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">
+                    Last-Mile Directions (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Turn left at the blue water tank, 2nd house with black gate"
+                    value={newDirectionsText}
+                    onChange={e => setNewDirectionsText(e.target.value)}
+                    className="neu-input w-full px-3 py-1.5 rounded-lg text-slate-800 text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-extrabold uppercase text-slate-500 mb-1">
+                    Your Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Sipho M."
+                    value={landmarkSubmitter}
+                    onChange={e => setLandmarkSubmitter(e.target.value)}
+                    className="neu-input w-full px-3 py-1.5 rounded-lg text-slate-800 text-xs"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="neu-btn-primary w-full py-2 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Save Landmark</span>
+              </button>
+            </form>
+
+            {/* Existing Community Landmarks */}
+            {landmarks.length > 0 && (
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase text-slate-400">Community Landmarks:</span>
+                {landmarks.map(lm => (
+                  <div key={lm.id} className="neu-flat-sm p-3 text-xs space-y-1">
+                    <p className="font-black text-slate-800">📍 {lm.landmark}</p>
+                    {lm.directionsGuide && (
+                      <p className="text-[11px] text-slate-600">↪ {lm.directionsGuide}</p>
+                    )}
+                    <span className="text-[9px] text-slate-400 block">Submitted by {lm.submittedBy}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
